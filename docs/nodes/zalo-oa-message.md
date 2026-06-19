@@ -1,32 +1,32 @@
-# ZaloOA Node — Message Resource
+# Nút ZaloOA — Tài nguyên Message *(ZaloOA Node — Message Resource)*
 
-The **Message** resource lets you send various types of messages to Zalo OA followers and check the delivery status of sent messages.
-
----
-
-## Prerequisites
-
-- A valid **Zalo OA API** credential with an active access token.
-- The recipient must be a follower of your OA.
-- The appropriate interaction window must be satisfied for cs and transaction message types (see [message-types.md](../message-types.md)).
+Tài nguyên **Message** cho phép bạn gửi nhiều loại tin nhắn đến người theo dõi Zalo OA và kiểm tra trạng thái gửi của các tin nhắn đã gửi.
 
 ---
 
-## Operations
+## Yêu cầu trước *(Prerequisites)*
+
+- Thông tin đăng nhập **Zalo OA API** hợp lệ với access token đang hoạt động.
+- Người nhận phải là người theo dõi OA của bạn.
+- Cửa sổ tương tác phù hợp phải được thỏa mãn đối với loại tin nhắn cs và transaction (xem [message-types.md](../message-types.md)).
+
+---
+
+## Các thao tác *(Operations)*
 
 ### sendText
 
-Send a plain text message to a follower.
+Gửi tin nhắn văn bản thuần túy đến người theo dõi.
 
 **Endpoint:** `POST /message/{type}` (type = cs | transaction | promotion)
 
-| Parameter | Type | Required | Description |
-|-----------|------|----------|-------------|
-| Message Type | select | Yes | `cs`, `transaction`, or `promotion` |
-| User ID | string | Yes | The follower's Zalo user ID |
-| Text | string | Yes | Message body (up to 2,000 characters) |
+| Tham số | Kiểu | Bắt buộc | Mô tả |
+|---------|------|----------|-------|
+| Message Type | select | Có | `cs`, `transaction`, hoặc `promotion` |
+| User ID | string | Có | Mã người dùng Zalo của người theo dõi |
+| Text | string | Có | Nội dung tin nhắn (tối đa 2.000 ký tự) |
 
-**Output example:**
+**Ví dụ đầu ra:**
 
 ```json
 {
@@ -38,27 +38,27 @@ Send a plain text message to a follower.
 }
 ```
 
-**Notes:**
-- Text supports Unicode (Vietnamese characters fully supported).
-- Links in text are automatically rendered as clickable in the Zalo app.
+**Lưu ý:**
+- Text hỗ trợ Unicode (ký tự tiếng Việt được hỗ trợ đầy đủ).
+- Đường dẫn trong văn bản tự động hiển thị dạng nhấp được trong ứng dụng Zalo.
 
 ---
 
 ### sendImage
 
-Send an image message to a follower. The image can be specified by URL or by an `attachment_id` returned from the **Media → uploadImage** operation.
+Gửi tin nhắn hình ảnh đến người theo dõi. Hình ảnh có thể được chỉ định qua URL hoặc `attachment_id` trả về từ thao tác **Media → uploadImage**.
 
 **Endpoint:** `POST /message/{type}`
 
-| Parameter | Type | Required | Description |
-|-----------|------|----------|-------------|
-| Message Type | select | Yes | `cs`, `transaction`, or `promotion` |
-| User ID | string | Yes | The follower's Zalo user ID |
-| Image Source | select | Yes | `url` or `attachment_id` |
-| Image URL | string | If source = url | Publicly accessible image URL |
-| Attachment ID | string | If source = attachment_id | Token from uploadImage operation |
+| Tham số | Kiểu | Bắt buộc | Mô tả |
+|---------|------|----------|-------|
+| Message Type | select | Có | `cs`, `transaction`, hoặc `promotion` |
+| User ID | string | Có | Mã người dùng Zalo của người theo dõi |
+| Image Source | select | Có | `url` hoặc `attachment_id` |
+| Image URL | string | Nếu source = url | URL hình ảnh có thể truy cập công khai |
+| Attachment ID | string | Nếu source = attachment_id | Token từ thao tác uploadImage |
 
-**Output example:**
+**Ví dụ đầu ra:**
 
 ```json
 {
@@ -70,26 +70,26 @@ Send an image message to a follower. The image can be specified by URL or by an 
 }
 ```
 
-**Notes:**
-- Supported formats: JPEG, PNG, GIF (static).
-- Maximum file size for URL-referenced images: 1 MB.
-- Using `attachment_id` is preferred for frequently sent images (avoids repeated downloads).
+**Lưu ý:**
+- Định dạng được hỗ trợ: JPEG, PNG, GIF (tĩnh).
+- Kích thước tệp tối đa cho hình ảnh qua URL: 1 MB.
+- Dùng `attachment_id` được ưu tiên cho hình ảnh gửi thường xuyên (tránh tải lại nhiều lần).
 
 ---
 
 ### sendFile
 
-Send a file attachment to a follower using a file token obtained from the **Media → uploadFile** operation.
+Gửi tệp đính kèm đến người theo dõi bằng token tệp lấy từ thao tác **Media → uploadFile**.
 
 **Endpoint:** `POST /message/{type}`
 
-| Parameter | Type | Required | Description |
-|-----------|------|----------|-------------|
-| Message Type | select | Yes | `cs`, `transaction`, or `promotion` |
-| User ID | string | Yes | The follower's Zalo user ID |
-| File Token | string | Yes | Token returned by `media.uploadFile` |
+| Tham số | Kiểu | Bắt buộc | Mô tả |
+|---------|------|----------|-------|
+| Message Type | select | Có | `cs`, `transaction`, hoặc `promotion` |
+| User ID | string | Có | Mã người dùng Zalo của người theo dõi |
+| File Token | string | Có | Token trả về bởi `media.uploadFile` |
 
-**Output example:**
+**Ví dụ đầu ra:**
 
 ```json
 {
@@ -101,35 +101,35 @@ Send a file attachment to a follower using a file token obtained from the **Medi
 }
 ```
 
-**Notes:**
-- Upload the file first using the **Media** resource to get a token.
-- Supported file types: PDF, DOC, DOCX, XLS, XLSX, PPT, PPTX, ZIP, and others.
-- Maximum file size: 25 MB.
+**Lưu ý:**
+- Tải tệp lên trước bằng tài nguyên **Media** để lấy token.
+- Định dạng được hỗ trợ: PDF, DOC, DOCX, XLS, XLSX, PPT, PPTX, ZIP và các định dạng khác.
+- Kích thước tệp tối đa: 25 MB.
 
 ---
 
 ### sendList
 
-Send a structured list message containing 1 to 4 elements. Each element includes a title, subtitle, image, and optional action button.
+Gửi tin nhắn danh sách có cấu trúc chứa 1 đến 4 phần tử. Mỗi phần tử bao gồm tiêu đề, phụ đề, hình ảnh và nút hành động tùy chọn.
 
 **Endpoint:** `POST /message/{type}`
 
-| Parameter | Type | Required | Description |
-|-----------|------|----------|-------------|
-| Message Type | select | Yes | `cs`, `transaction`, or `promotion` |
-| User ID | string | Yes | The follower's Zalo user ID |
-| Elements | array | Yes | 1–4 list elements (see below) |
+| Tham số | Kiểu | Bắt buộc | Mô tả |
+|---------|------|----------|-------|
+| Message Type | select | Có | `cs`, `transaction`, hoặc `promotion` |
+| User ID | string | Có | Mã người dùng Zalo của người theo dõi |
+| Elements | array | Có | 1–4 phần tử danh sách (xem bên dưới) |
 
-**Element structure:**
+**Cấu trúc phần tử:**
 
-| Field | Type | Required | Description |
-|-------|------|----------|-------------|
-| title | string | Yes | Element heading |
-| subtitle | string | No | Element subheading |
-| image_url | string | No | Element image URL |
-| default_action | object | No | `{ "type": "oa.open.url", "url": "..." }` |
+| Trường | Kiểu | Bắt buộc | Mô tả |
+|--------|------|----------|-------|
+| title | string | Có | Tiêu đề phần tử |
+| subtitle | string | Không | Phụ đề phần tử |
+| image_url | string | Không | URL hình ảnh phần tử |
+| default_action | object | Không | `{ "type": "oa.open.url", "url": "..." }` |
 
-**Output example:**
+**Ví dụ đầu ra:**
 
 ```json
 {
@@ -141,25 +141,25 @@ Send a structured list message containing 1 to 4 elements. Each element includes
 }
 ```
 
-**Notes:**
-- List messages are ideal for product listings, article previews, and menu-style interactions.
-- Minimum 1 element, maximum 4 elements.
+**Lưu ý:**
+- Tin nhắn danh sách lý tưởng cho danh sách sản phẩm, xem trước bài viết và tương tác kiểu menu.
+- Tối thiểu 1 phần tử, tối đa 4 phần tử.
 
 ---
 
 ### sendSticker
 
-Send a Zalo sticker to a follower.
+Gửi nhãn dán Zalo đến người theo dõi.
 
 **Endpoint:** `POST /message/{type}`
 
-| Parameter | Type | Required | Description |
-|-----------|------|----------|-------------|
-| Message Type | select | Yes | `cs`, `transaction`, or `promotion` |
-| User ID | string | Yes | The follower's Zalo user ID |
-| Sticker ID | string | Yes | Numeric sticker ID from Zalo's sticker catalog |
+| Tham số | Kiểu | Bắt buộc | Mô tả |
+|---------|------|----------|-------|
+| Message Type | select | Có | `cs`, `transaction`, hoặc `promotion` |
+| User ID | string | Có | Mã người dùng Zalo của người theo dõi |
+| Sticker ID | string | Có | Mã nhãn dán số từ danh mục nhãn dán của Zalo |
 
-**Output example:**
+**Ví dụ đầu ra:**
 
 ```json
 {
@@ -171,22 +171,22 @@ Send a Zalo sticker to a follower.
 }
 ```
 
-**Notes:**
-- Sticker IDs are specific to the Zalo platform. Refer to the Zalo OA developer documentation for the sticker catalog.
+**Lưu ý:**
+- Sticker ID đặc thù với nền tảng Zalo. Tham khảo tài liệu nhà phát triển Zalo OA để có danh mục nhãn dán.
 
 ---
 
 ### getStatus
 
-Check the delivery status of a previously sent message.
+Kiểm tra trạng thái gửi của tin nhắn đã gửi trước đó.
 
 **Endpoint:** `POST /message/status`
 
-| Parameter | Type | Required | Description |
-|-----------|------|----------|-------------|
-| Message ID | string | Yes | The `message_id` returned when the message was sent |
+| Tham số | Kiểu | Bắt buộc | Mô tả |
+|---------|------|----------|-------|
+| Message ID | string | Có | `message_id` trả về khi gửi tin nhắn |
 
-**Output example:**
+**Ví dụ đầu ra:**
 
 ```json
 {
@@ -201,26 +201,26 @@ Check the delivery status of a previously sent message.
 }
 ```
 
-**Possible status values:**
+**Các giá trị trạng thái có thể:**
 
-| Status | Meaning |
-|--------|---------|
-| `sent` | Message sent to Zalo servers |
-| `delivered` | Message delivered to user's device |
-| `seen` | User has opened the message |
-| `failed` | Delivery failed |
+| Trạng thái | Ý nghĩa |
+|------------|---------|
+| `sent` | Tin nhắn đã gửi đến máy chủ Zalo |
+| `delivered` | Tin nhắn đã giao đến thiết bị người dùng |
+| `seen` | Người dùng đã mở tin nhắn |
+| `failed` | Gửi thất bại |
 
 ---
 
-## Example Workflow — Order Confirmation
+## Ví dụ luồng làm việc — Xác nhận đơn hàng *(Example Workflow — Order Confirmation)*
 
 ```
 Webhook (order placed)
   → ZaloOA Message sendText
       Message Type: transaction
       User ID:      {{ $json.body.zaloUserId }}
-      Text:         Your order #{{ $json.body.orderId }} has been confirmed!
-                    Estimated delivery: {{ $json.body.deliveryDate }}
+      Text:         Đơn hàng #{{ $json.body.orderId }} của bạn đã được xác nhận!
+                    Ngày giao hàng dự kiến: {{ $json.body.deliveryDate }}
   → Wait (10 minutes)
   → ZaloOA Message getStatus
       Message ID: {{ $node["ZaloOA"].json.data.message_id }}
@@ -228,20 +228,20 @@ Webhook (order placed)
 
 ---
 
-## Error Reference
+## Tham chiếu lỗi *(Error Reference)*
 
-| Code | Meaning |
-|------|---------|
-| `-201` | Missing required parameter (User ID, text, or token) |
-| `-204` | Invalid or expired access token |
-| `-213` | User does not follow this OA |
-| `-214` | User is outside the allowed interaction window |
+| Mã | Ý nghĩa |
+|----|---------|
+| `-201` | Thiếu tham số bắt buộc (User ID, text hoặc token) |
+| `-204` | Access token không hợp lệ hoặc đã hết hạn |
+| `-213` | Người dùng không theo dõi OA này |
+| `-214` | Người dùng ngoài cửa sổ tương tác cho phép |
 
 ---
 
-## Notes and Limitations
+## Lưu ý và giới hạn *(Notes and Limitations)*
 
-- Messages cannot be edited or deleted after sending.
-- There is no read receipt API beyond `getStatus`.
-- The Zalo app does not display message timestamps to users with second-level precision.
-- List messages with more than 4 elements are rejected by the API; validate element count before calling.
+- Tin nhắn không thể chỉnh sửa hoặc xóa sau khi đã gửi.
+- Không có API biên lai đã đọc ngoài `getStatus`.
+- Ứng dụng Zalo không hiển thị dấu thời gian tin nhắn với độ chính xác đến giây cho người dùng.
+- Tin nhắn danh sách có hơn 4 phần tử bị API từ chối; xác nhận số lượng phần tử trước khi gọi.

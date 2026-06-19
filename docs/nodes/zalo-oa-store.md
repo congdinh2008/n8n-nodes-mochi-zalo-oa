@@ -1,30 +1,30 @@
-# ZaloOA Node — Store Resource
+# Nút ZaloOA — Tài nguyên Store *(ZaloOA Node — Store Resource)*
 
-The **Store** resource lets you manage a product catalog and orders within your Zalo OA's built-in store. You can create and update product categories, list and manage products, and create orders.
-
----
-
-## Prerequisites
-
-- A valid **Zalo OA API** credential with an active access token.
-- Your OA must have the **Zalo Store** feature enabled. Contact Zalo or check your OA admin dashboard to enable it.
-- Category IDs must exist before products can be assigned to them.
+Tài nguyên **Store** cho phép bạn quản lý danh mục sản phẩm và đơn hàng trong cửa hàng tích hợp sẵn của Zalo OA. Bạn có thể tạo và cập nhật danh mục sản phẩm, liệt kê và quản lý sản phẩm, và tạo đơn hàng.
 
 ---
 
-## Operations
+## Yêu cầu trước *(Prerequisites)*
+
+- Thông tin đăng nhập **Zalo OA API** hợp lệ với access token đang hoạt động.
+- OA của bạn phải được bật tính năng **Zalo Store**. Liên hệ Zalo hoặc kiểm tra bảng quản trị OA để kích hoạt.
+- Mã danh mục phải tồn tại trước khi sản phẩm có thể được gán vào.
+
+---
+
+## Các thao tác *(Operations)*
 
 ### createCategory
 
-Create a new product category in your OA store.
+Tạo danh mục sản phẩm mới trong cửa hàng OA của bạn.
 
-**Endpoint:** `POST /store/category/create` (internal path handled by node)
+**Endpoint:** `POST /store/category/create` (đường dẫn nội bộ được xử lý bởi nút)
 
-| Parameter | Type | Required | Description |
-|-----------|------|----------|-------------|
-| Name | string | Yes | Category display name (max 50 characters) |
+| Tham số | Kiểu | Bắt buộc | Mô tả |
+|---------|------|----------|-------|
+| Name | string | Có | Tên hiển thị danh mục (tối đa 50 ký tự) |
 
-**Output example:**
+**Ví dụ đầu ra:**
 
 ```json
 {
@@ -40,14 +40,14 @@ Create a new product category in your OA store.
 
 ### updateCategory
 
-Update the name of an existing category.
+Cập nhật tên của danh mục hiện có.
 
-| Parameter | Type | Required | Description |
-|-----------|------|----------|-------------|
-| Category ID | string | Yes | ID of the category to update |
-| Name | string | Yes | New category name |
+| Tham số | Kiểu | Bắt buộc | Mô tả |
+|---------|------|----------|-------|
+| Category ID | string | Có | Mã danh mục cần cập nhật |
+| Name | string | Có | Tên danh mục mới |
 
-**Output example:**
+**Ví dụ đầu ra:**
 
 ```json
 {
@@ -60,9 +60,9 @@ Update the name of an existing category.
 
 ### getCategories
 
-Retrieve all product categories for your OA store.
+Truy xuất tất cả danh mục sản phẩm trong cửa hàng OA của bạn.
 
-**Output example:**
+**Ví dụ đầu ra:**
 
 ```json
 {
@@ -79,18 +79,18 @@ Retrieve all product categories for your OA store.
 
 ### createProduct
 
-Add a new product to your OA store.
+Thêm sản phẩm mới vào cửa hàng OA của bạn.
 
-| Parameter | Type | Required | Description |
-|-----------|------|----------|-------------|
-| Name | string | Yes | Product name (max 120 characters) |
-| Description | string | No | Product description |
-| Category ID | string | Yes | Category to place the product in |
-| Price | number | Yes | Price in Vietnamese Dong (VND), integer |
-| Photos | array | No | Array of image URLs (max 10) |
-| Status | select | Yes | `show` (visible) or `hide` (hidden) |
+| Tham số | Kiểu | Bắt buộc | Mô tả |
+|---------|------|----------|-------|
+| Name | string | Có | Tên sản phẩm (tối đa 120 ký tự) |
+| Description | string | Không | Mô tả sản phẩm |
+| Category ID | string | Có | Danh mục để đặt sản phẩm vào |
+| Price | number | Có | Giá bằng Đồng Việt Nam (VND), số nguyên |
+| Photos | array | Không | Mảng URL hình ảnh (tối đa 10) |
+| Status | select | Có | `show` (hiển thị) hoặc `hide` (ẩn) |
 
-**Output example:**
+**Ví dụ đầu ra:**
 
 ```json
 {
@@ -102,28 +102,28 @@ Add a new product to your OA store.
 }
 ```
 
-**Notes:**
-- Price must be a positive integer in VND (e.g., `150000` for 150,000 VND).
-- Photo URLs must be publicly accessible. Use the **Media → uploadImage** operation and provide the resulting CDN URL.
-- Up to 10 photos per product.
+**Lưu ý:**
+- Giá phải là số nguyên dương bằng VND (ví dụ: `150000` cho 150.000 VND).
+- URL hình ảnh phải có thể truy cập công khai. Dùng thao tác **Media → uploadImage** và cung cấp URL CDN kết quả.
+- Tối đa 10 hình ảnh mỗi sản phẩm.
 
 ---
 
 ### updateProduct
 
-Update an existing product's details.
+Cập nhật thông tin chi tiết của sản phẩm hiện có.
 
-| Parameter | Type | Required | Description |
-|-----------|------|----------|-------------|
-| Product ID | string | Yes | ID of the product to update |
-| Name | string | No | New product name |
-| Description | string | No | New description |
-| Category ID | string | No | Reassign to a different category |
-| Price | number | No | New price in VND |
-| Photos | array | No | Replace all photos with this new set |
-| Status | select | No | `show` or `hide` |
+| Tham số | Kiểu | Bắt buộc | Mô tả |
+|---------|------|----------|-------|
+| Product ID | string | Có | Mã sản phẩm cần cập nhật |
+| Name | string | Không | Tên sản phẩm mới |
+| Description | string | Không | Mô tả mới |
+| Category ID | string | Không | Chuyển sang danh mục khác |
+| Price | number | Không | Giá mới bằng VND |
+| Photos | array | Không | Thay thế tất cả hình ảnh bằng bộ mới này |
+| Status | select | Không | `show` hoặc `hide` |
 
-**Output example:**
+**Ví dụ đầu ra:**
 
 ```json
 {
@@ -136,13 +136,13 @@ Update an existing product's details.
 
 ### getProduct
 
-Retrieve the details of a single product by ID.
+Truy xuất thông tin chi tiết của một sản phẩm theo mã.
 
-| Parameter | Type | Required | Description |
-|-----------|------|----------|-------------|
-| Product ID | string | Yes | ID of the product |
+| Tham số | Kiểu | Bắt buộc | Mô tả |
+|---------|------|----------|-------|
+| Product ID | string | Có | Mã sản phẩm |
 
-**Output example:**
+**Ví dụ đầu ra:**
 
 ```json
 {
@@ -167,16 +167,16 @@ Retrieve the details of a single product by ID.
 
 ### getProducts
 
-Retrieve a paginated list of products in the store.
+Truy xuất danh sách sản phẩm có phân trang trong cửa hàng.
 
-| Parameter | Type | Required | Description |
-|-----------|------|----------|-------------|
-| Offset | number | Yes | Starting index (0-based) |
-| Count | number | Yes | Number of products per page (max 20) |
-| Category ID | string | No | Filter by category |
-| Status | select | No | `show`, `hide`, or all |
+| Tham số | Kiểu | Bắt buộc | Mô tả |
+|---------|------|----------|-------|
+| Offset | number | Có | Chỉ số bắt đầu (bắt đầu từ 0) |
+| Count | number | Có | Số sản phẩm mỗi trang (tối đa 20) |
+| Category ID | string | Không | Lọc theo danh mục |
+| Status | select | Không | `show`, `hide`, hoặc tất cả |
 
-**Output example:**
+**Ví dụ đầu ra:**
 
 ```json
 {
@@ -200,24 +200,24 @@ Retrieve a paginated list of products in the store.
 
 ### createOrder
 
-Create a new order in the OA store for a follower.
+Tạo đơn hàng mới trong cửa hàng OA cho một người theo dõi.
 
-| Parameter | Type | Required | Description |
-|-----------|------|----------|-------------|
-| User ID | string | Yes | Zalo user ID of the buyer |
-| Items | array | Yes | Array of order line items |
-| Shipping Address | object | No | Delivery address details |
-| Note | string | No | Order note from the customer |
+| Tham số | Kiểu | Bắt buộc | Mô tả |
+|---------|------|----------|-------|
+| User ID | string | Có | Mã người dùng Zalo của người mua |
+| Items | array | Có | Mảng các mục trong đơn hàng |
+| Shipping Address | object | Không | Thông tin địa chỉ giao hàng |
+| Note | string | Không | Ghi chú đơn hàng từ khách hàng |
 
-**Order line item fields:**
+**Các trường mục đơn hàng:**
 
-| Field | Type | Required | Description |
-|-------|------|----------|-------------|
-| product_id | string | Yes | Product to include |
-| quantity | number | Yes | Number of units |
-| price | number | Yes | Unit price at time of order (VND) |
+| Trường | Kiểu | Bắt buộc | Mô tả |
+|--------|------|----------|-------|
+| product_id | string | Có | Sản phẩm cần đưa vào |
+| quantity | number | Có | Số lượng đơn vị |
+| price | number | Có | Đơn giá tại thời điểm đặt hàng (VND) |
 
-**Output example:**
+**Ví dụ đầu ra:**
 
 ```json
 {
@@ -231,7 +231,7 @@ Create a new order in the OA store for a follower.
 
 ---
 
-## Example Workflow — Sync Products from External Catalog
+## Ví dụ luồng làm việc — Đồng bộ sản phẩm từ danh mục bên ngoài *(Example Workflow — Sync Products from External Catalog)*
 
 ```
 Schedule Trigger (daily 2:00 AM)
@@ -247,7 +247,7 @@ Schedule Trigger (daily 2:00 AM)
 
 ---
 
-## Example Workflow — Process an Incoming Order Message
+## Ví dụ luồng làm việc — Xử lý tin nhắn đặt hàng đến *(Example Workflow — Process an Incoming Order Message)*
 
 ```
 ZaloOAWebhook (event: user_send_text, message: "Order #12345")
@@ -256,26 +256,26 @@ ZaloOAWebhook (event: user_send_text, message: "Order #12345")
         User ID:  {{ $json.sender.id }}
         Items:    [{ product_id: "prod_abc", quantity: 1, price: 150000 }]
   → ZaloOA Message sendText (transaction)
-        Text: Your order has been placed! Order ID: {{ $node["ZaloOA Store"].json.data.order_id }}
+        Text: Đơn hàng của bạn đã được đặt! Mã đơn hàng: {{ $node["ZaloOA Store"].json.data.order_id }}
 ```
 
 ---
 
-## Error Reference
+## Tham chiếu lỗi *(Error Reference)*
 
-| Code | Meaning | Resolution |
-|------|---------|-----------|
-| `-201` | Missing required parameter | Check product name, category ID, and price |
-| `-204` | Invalid or expired access token | Refresh the access token |
-| Category not found | Invalid category ID | Use getCategories to verify the ID |
-| Store not enabled | Zalo Store feature not active | Enable the feature in your OA admin dashboard |
+| Mã | Ý nghĩa | Cách xử lý |
+|----|---------|-----------|
+| `-201` | Thiếu tham số bắt buộc | Kiểm tra tên sản phẩm, mã danh mục và giá |
+| `-204` | Access token không hợp lệ hoặc đã hết hạn | Làm mới access token |
+| Category not found | Mã danh mục không hợp lệ | Dùng getCategories để xác minh mã |
+| Store not enabled | Tính năng Zalo Store chưa được bật | Bật tính năng trong bảng quản trị OA |
 
 ---
 
-## Notes and Limitations
+## Lưu ý và giới hạn *(Notes and Limitations)*
 
-- Prices must be in VND (Vietnamese Dong) as integers. Decimal prices are not supported.
-- There is no bulk delete API for products. Remove products individually by updating their status to `hide`.
-- `createOrder` creates an OA-side record; it does not process payments. Integrate with a payment gateway separately.
-- Maximum 10 photos per product.
-- The Zalo Store is primarily designed for the Vietnamese market and VND currency.
+- Giá phải bằng VND (Đồng Việt Nam) dưới dạng số nguyên. Giá thập phân không được hỗ trợ.
+- Không có API xóa hàng loạt cho sản phẩm. Xóa sản phẩm từng cái bằng cách cập nhật trạng thái thành `hide`.
+- `createOrder` tạo bản ghi phía OA; không xử lý thanh toán. Tích hợp với cổng thanh toán riêng biệt.
+- Tối đa 10 hình ảnh mỗi sản phẩm.
+- Zalo Store được thiết kế chủ yếu cho thị trường Việt Nam và tiền tệ VND.

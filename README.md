@@ -4,35 +4,35 @@
 [![npm version](https://img.shields.io/npm/v/n8n-nodes-mochi-zalo-oa)](https://www.npmjs.com/package/n8n-nodes-mochi-zalo-oa)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 
-Community n8n nodes for **Zalo Official Account (OA) API v3.0**. Automate messaging, follower management, media uploads, webhook handling, and more — all from your n8n workflows.
+Bộ nút cộng đồng n8n dành cho **Zalo Official Account (OA) API v3.0**. Tự động hóa việc gửi tin nhắn, quản lý người theo dõi, tải lên tệp phương tiện, xử lý webhook và nhiều hơn nữa — tất cả trong các luồng làm việc n8n của bạn.
 
 ---
 
-## What is Zalo OA?
+## Zalo OA là gì? *(What is Zalo OA?)*
 
-[Zalo](https://zalo.me) is Vietnam's most-used messaging platform with over 75 million users. A **Zalo Official Account (OA)** is a verified business presence on Zalo, similar to a Facebook Page or LINE Official Account. The Zalo OA API lets you:
+[Zalo](https://zalo.me) là nền tảng nhắn tin phổ biến nhất tại Việt Nam với hơn 75 triệu người dùng. **Zalo Official Account (OA)** là tài khoản doanh nghiệp được xác minh trên Zalo, tương tự như Facebook Page hay LINE Official Account. Zalo OA API cho phép bạn:
 
-- Send text, image, file, list, and sticker messages to followers
-- Manage follower profiles and tags
-- Publish articles and manage a product store
-- Respond to incoming messages via webhooks
-- Update your OA profile and chat menu
+- Gửi tin nhắn văn bản, hình ảnh, tệp đính kèm, danh sách và nhãn dán đến người theo dõi
+- Quản lý hồ sơ và thẻ nhãn của người theo dõi
+- Đăng bài viết và quản lý cửa hàng sản phẩm
+- Nhận tin nhắn đến qua webhook theo thời gian thực
+- Cập nhật hồ sơ OA và menu chat
 
-This package integrates the full Zalo OA API v3.0 into n8n through two nodes.
+Gói này tích hợp toàn bộ Zalo OA API v3.0 vào n8n thông qua hai nút.
 
 ---
 
-## Nodes
+## Các nút *(Nodes)*
 
-| Node | Type | Description |
-|------|------|-------------|
-| **ZaloOA** | Action | Send messages, manage followers, upload media, handle tags, menus, articles, store, and conversations |
-| **ZaloOAWebhook** | Trigger | Receive real-time events from Zalo OA (new follower, incoming message, button click, etc.) |
+| Nút | Loại | Mô tả |
+|-----|------|-------|
+| **ZaloOA** | Action | Gửi tin nhắn, quản lý người theo dõi, tải lên phương tiện, xử lý thẻ nhãn, menu, bài viết, cửa hàng và hội thoại |
+| **ZaloOAWebhook** | Trigger | Nhận sự kiện theo thời gian thực từ Zalo OA (người theo dõi mới, tin nhắn đến, nhấn nút, v.v.) |
 
-### ZaloOA — Resources and Operations
+### ZaloOA — Tài nguyên và thao tác *(Resources and Operations)*
 
-| Resource | Operations |
-|----------|-----------|
+| Tài nguyên | Thao tác |
+|------------|---------|
 | **Message** | sendText, sendImage, sendFile, sendList, sendSticker, getStatus |
 | **Follower** | getInfo, getList, update |
 | **OA** | getProfile |
@@ -43,31 +43,31 @@ This package integrates the full Zalo OA API v3.0 into n8n through two nodes.
 | **Store** | createProduct, updateProduct, getProduct, getProducts, createCategory, updateCategory, getCategories, createOrder |
 | **Conversation** | getRecentChats, getMessages |
 
-### ZaloOAWebhook — Supported Events
+### ZaloOAWebhook — Các sự kiện được hỗ trợ *(Supported Events)*
 
-`follow`, `unfollow`, `user_send_text`, `user_send_image`, `user_send_file`, `user_send_audio`, `user_send_video`, `user_send_sticker`, `user_send_gif`, `user_send_link`, `user_send_location`, `user_send_business_card`, `user_click_button`, `user_click_link`, `group_*` events, `add_user_to_tag`, `user_call_oa`, and `*` (all events)
+`follow`, `unfollow`, `user_send_text`, `user_send_image`, `user_send_file`, `user_send_audio`, `user_send_video`, `user_send_sticker`, `user_send_gif`, `user_send_link`, `user_send_location`, `user_send_business_card`, `user_click_button`, `user_click_link`, các sự kiện `group_*`, `add_user_to_tag`, `user_call_oa`, và `*` (tất cả sự kiện)
 
 ---
 
-## Installation
+## Cài đặt *(Installation)*
 
 ### n8n Desktop / Cloud
 
-In the n8n UI go to **Settings → Community Nodes → Install** and enter:
+Trong giao diện n8n, vào **Settings → Community Nodes → Install** và nhập:
 
 ```
 n8n-nodes-mochi-zalo-oa
 ```
 
-### Self-hosted n8n (npm)
+### n8n tự lưu trữ với npm *(Self-hosted n8n via npm)*
 
 ```bash
 npm install n8n-nodes-mochi-zalo-oa
 ```
 
-Then restart your n8n instance.
+Sau đó khởi động lại phiên bản n8n của bạn.
 
-### Self-hosted n8n (Docker)
+### n8n tự lưu trữ với Docker *(Self-hosted n8n via Docker)*
 
 ```dockerfile
 FROM n8nio/n8n
@@ -76,133 +76,133 @@ RUN cd /usr/local/lib/node_modules/n8n && npm install n8n-nodes-mochi-zalo-oa
 
 ---
 
-## Credential Setup
+## Thiết lập thông tin đăng nhập *(Credential Setup)*
 
-1. Go to [developers.zalo.me](https://developers.zalo.me) and create an app.
-2. Under **Official Account API**, enable OA permissions.
-3. Complete the OAuth v4 + PKCE flow to obtain an **Access Token** and **Refresh Token**.
-4. In n8n, create a new credential of type **Zalo OA API** and fill in:
-   - **App ID** — your Zalo app ID
-   - **App Secret** — your Zalo app secret (used for webhook MAC verification)
-   - **Access Token** — expires after 25 hours (90,000 seconds)
-   - **Refresh Token** — valid for 3 months; use it to obtain a new access token
+1. Truy cập [developers.zalo.me](https://developers.zalo.me) và tạo một ứng dụng.
+2. Trong mục **Official Account API**, bật các quyền OA cần thiết.
+3. Thực hiện luồng OAuth v4 + PKCE để lấy **Access Token** và **Refresh Token**.
+4. Trong n8n, tạo thông tin đăng nhập mới loại **Zalo OA API** và điền:
+   - **App ID** — mã ứng dụng Zalo của bạn
+   - **App Secret** — khóa bí mật ứng dụng (dùng để xác minh chữ ký MAC webhook)
+   - **Access Token** — hết hạn sau 25 giờ (90.000 giây)
+   - **Refresh Token** — có hiệu lực trong 3 tháng; dùng để lấy access token mới
 
-> See [docs/credential-setup.md](docs/credential-setup.md) for the full OAuth flow and token refresh strategy.
+> Xem [docs/credential-setup.md](docs/credential-setup.md) để biết toàn bộ luồng OAuth và chiến lược làm mới token.
 
 ---
 
-## Quick Start — Send Your First Message
+## Bắt đầu nhanh — Gửi tin nhắn đầu tiên *(Quick Start — Send Your First Message)*
 
-**Goal:** Send a text message to a Zalo follower when triggered manually.
+**Mục tiêu:** Gửi tin nhắn văn bản đến một người theo dõi Zalo khi kích hoạt thủ công.
 
-1. Create a new workflow in n8n.
-2. Add a **Manual Trigger** node.
-3. Add a **ZaloOA** node:
-   - Credential: your Zalo OA API credential
+1. Tạo một luồng làm việc mới trong n8n.
+2. Thêm nút **Manual Trigger**.
+3. Thêm nút **ZaloOA**:
+   - Credential: thông tin đăng nhập Zalo OA API của bạn
    - Resource: **Message**
    - Operation: **sendText**
    - Message Type: **cs** (Customer Service)
-   - User ID: `<follower's Zalo user ID>`
-   - Text: `Hello! Thank you for following our OA.`
-4. Connect the nodes and click **Execute Workflow**.
+   - User ID: `<mã người dùng Zalo của người theo dõi>`
+   - Text: `Xin chào! Cảm ơn bạn đã theo dõi OA của chúng tôi.`
+4. Kết nối các nút và nhấn **Execute Workflow**.
 
-You should see the Zalo message ID in the output. The follower will receive the message in their Zalo app.
-
----
-
-## Message Type Guide
-
-Zalo OA has three message types that control who can receive a message and under what conditions:
-
-| Type | Audience | Interaction Requirement | Typical Use |
-|------|----------|------------------------|-------------|
-| `cs` | Individual follower | Must have interacted within last **7 days** | Customer support replies |
-| `transaction` | Individual follower | Must have interacted within last **1 year** | Order confirmations, reminders |
-| `promotion` | Active followers (broadcast) | Daily quota applies | Marketing campaigns |
-
-> See [docs/message-types.md](docs/message-types.md) for detailed guidance, quotas, and examples.
+Bạn sẽ thấy mã tin nhắn Zalo trong kết quả đầu ra. Người theo dõi sẽ nhận được tin nhắn trong ứng dụng Zalo của họ.
 
 ---
 
-## Webhook Setup Guide
+## Hướng dẫn loại tin nhắn *(Message Type Guide)*
 
-The **ZaloOAWebhook** node receives real-time events from Zalo.
+Zalo OA có ba loại tin nhắn kiểm soát đối tượng nhận và điều kiện gửi:
 
-**Quick setup:**
+| Loại | Đối tượng | Yêu cầu tương tác | Trường hợp sử dụng |
+|------|-----------|-------------------|-------------------|
+| `cs` | Người theo dõi cá nhân | Phải đã tương tác trong **7 ngày** qua | Trả lời hỗ trợ khách hàng |
+| `transaction` | Người theo dõi cá nhân | Phải đã tương tác trong **1 năm** qua | Xác nhận đơn hàng, nhắc nhở |
+| `promotion` | Người theo dõi hoạt động (phát sóng) | Có hạn ngạch hàng ngày | Chiến dịch marketing |
 
-1. Add a **ZaloOAWebhook** node to a workflow and activate it.
-2. Copy the **Webhook URL** from the node (e.g., `https://your-n8n.example.com/webhook/zalo-oa`).
-3. In the [Zalo Developer Console](https://developers.zalo.me), register the URL as your OA webhook endpoint.
-4. Configure your App Secret in the credential — the node verifies the `X-ZEvent-Signature` header automatically using HMAC-SHA256.
-5. Select which event types to listen for (or choose `*` for all).
-
-> See [docs/webhook-guide.md](docs/webhook-guide.md) for the full setup, event reference, and retry behavior.
+> Xem [docs/message-types.md](docs/message-types.md) để biết hướng dẫn chi tiết, hạn ngạch và ví dụ.
 
 ---
 
-## Error Codes Reference
+## Hướng dẫn thiết lập Webhook *(Webhook Setup Guide)*
 
-| Code | Meaning | Resolution |
-|------|---------|-----------|
-| `-201` | Missing required parameter | Check that all required fields are filled |
-| `-204` | Invalid or expired access token | Refresh your access token |
-| `-213` | User does not follow this OA | Verify the user ID and that the user has followed your OA |
-| `-214` | User is outside the interaction window | Use `transaction` type (1-year window) or wait for the user to re-engage |
-| `-240` | API v2.0 is disabled | The operation requires v3.0; this package handles it automatically |
+Nút **ZaloOAWebhook** nhận sự kiện theo thời gian thực từ Zalo.
 
----
+**Thiết lập nhanh:**
 
-## Rate Limits
+1. Thêm nút **ZaloOAWebhook** vào luồng làm việc và kích hoạt nó.
+2. Sao chép **Webhook URL** từ nút (ví dụ: `https://your-n8n.example.com/webhook/zalo-oa`).
+3. Trong [Zalo Developer Console](https://developers.zalo.me), đăng ký URL làm điểm cuối webhook OA của bạn.
+4. Cấu hình App Secret trong thông tin đăng nhập — nút tự động xác minh tiêu đề `X-ZEvent-Signature` bằng HMAC-SHA256.
+5. Chọn loại sự kiện cần lắng nghe (hoặc chọn `*` cho tất cả).
 
-Zalo OA API enforces rate limits per OA per day:
-
-- **cs / transaction messages:** Tied to user interaction; no hard daily cap per recipient, but server-side throttling applies.
-- **promotion messages:** Subject to a daily broadcast quota defined by your OA tier. Exceeding the quota returns an error.
-- **API calls:** General rate limiting applies. Implement retry logic with exponential back-off for production workflows.
+> Xem [docs/webhook-guide.md](docs/webhook-guide.md) để biết thiết lập đầy đủ, tham chiếu sự kiện và hành vi thử lại.
 
 ---
 
-## Documentation
+## Tham chiếu mã lỗi *(Error Codes Reference)*
 
-| Document | Description |
-|----------|-------------|
-| [Getting Started](docs/getting-started.md) | Full walkthrough from zero to first message |
-| [Credential Setup](docs/credential-setup.md) | OAuth flow and token refresh |
-| [Message Types](docs/message-types.md) | cs vs transaction vs promotion |
-| [Webhook Guide](docs/webhook-guide.md) | Webhook setup and event reference |
-| [Message Node](docs/nodes/zalo-oa-message.md) | All message operations |
-| [Follower Node](docs/nodes/zalo-oa-follower.md) | Follower management |
-| [Media Node](docs/nodes/zalo-oa-media.md) | Image, file, and GIF uploads |
-| [Tag Node](docs/nodes/zalo-oa-tag.md) | Tag management |
-| [Menu Node](docs/nodes/zalo-oa-menu.md) | OA chat menu |
-| [Article Node](docs/nodes/zalo-oa-article.md) | Article publishing |
-| [Store Node](docs/nodes/zalo-oa-store.md) | Product and order management |
-| [Conversation Node](docs/nodes/zalo-oa-conversation.md) | Chat history |
-| [Webhook Node](docs/nodes/zalo-oa-webhook.md) | Trigger events reference |
+| Mã | Ý nghĩa | Cách xử lý |
+|----|---------|-----------|
+| `-201` | Thiếu tham số bắt buộc | Kiểm tra tất cả các trường bắt buộc đã được điền |
+| `-204` | Access token không hợp lệ hoặc đã hết hạn | Làm mới access token |
+| `-213` | Người dùng không theo dõi OA này | Xác minh mã người dùng và họ đã theo dõi OA của bạn |
+| `-214` | Người dùng ngoài cửa sổ tương tác | Dùng loại `transaction` (cửa sổ 1 năm) hoặc chờ người dùng tương tác lại |
+| `-240` | API v2.0 bị vô hiệu hóa | Thao tác yêu cầu v3.0; gói này xử lý tự động |
 
 ---
 
-## Contributing
+## Giới hạn tốc độ *(Rate Limits)*
 
-Contributions are welcome. Please open an issue or pull request on [GitHub](https://github.com/congdinh2008/n8n-nodes-mochi-zalo-oa).
+Zalo OA API áp dụng giới hạn tốc độ theo OA mỗi ngày:
 
-1. Fork the repository.
-2. Create a feature branch: `git checkout -b feature/my-feature`
-3. Commit your changes with descriptive messages.
-4. Run `npm test` and `npm run lint` before submitting.
-5. Open a pull request against `main`.
+- **Tin nhắn cs / transaction:** Liên kết với tương tác người dùng; không có giới hạn cứng hàng ngày theo người nhận, nhưng giới hạn phía máy chủ vẫn áp dụng.
+- **Tin nhắn promotion:** Phụ thuộc vào hạn ngạch phát sóng hàng ngày được xác định theo cấp OA của bạn. Vượt quá hạn ngạch sẽ trả về lỗi.
+- **Lời gọi API:** Giới hạn tốc độ chung được áp dụng. Hãy triển khai logic thử lại với thời gian chờ tăng dần cho các luồng làm việc sản xuất.
 
 ---
 
-## License
+## Tài liệu *(Documentation)*
+
+| Tài liệu | Mô tả |
+|----------|-------|
+| [Bắt đầu nhanh](docs/getting-started.md) | Hướng dẫn toàn bộ từ đầu đến tin nhắn đầu tiên |
+| [Thiết lập thông tin đăng nhập](docs/credential-setup.md) | Luồng OAuth và làm mới token |
+| [Loại tin nhắn](docs/message-types.md) | cs vs transaction vs promotion |
+| [Hướng dẫn Webhook](docs/webhook-guide.md) | Thiết lập webhook và tham chiếu sự kiện |
+| [Nút Message](docs/nodes/zalo-oa-message.md) | Tất cả thao tác gửi tin nhắn |
+| [Nút Follower](docs/nodes/zalo-oa-follower.md) | Quản lý người theo dõi |
+| [Nút Media](docs/nodes/zalo-oa-media.md) | Tải lên hình ảnh, tệp và GIF |
+| [Nút Tag](docs/nodes/zalo-oa-tag.md) | Quản lý thẻ nhãn |
+| [Nút Menu](docs/nodes/zalo-oa-menu.md) | Menu chat OA |
+| [Nút Article](docs/nodes/zalo-oa-article.md) | Đăng bài viết |
+| [Nút Store](docs/nodes/zalo-oa-store.md) | Quản lý sản phẩm và đơn hàng |
+| [Nút Conversation](docs/nodes/zalo-oa-conversation.md) | Lịch sử hội thoại |
+| [Nút Webhook](docs/nodes/zalo-oa-webhook.md) | Tham chiếu sự kiện kích hoạt |
+
+---
+
+## Đóng góp *(Contributing)*
+
+Chúng tôi hoan nghênh mọi đóng góp. Vui lòng mở issue hoặc pull request trên [GitHub](https://github.com/congdinh2008/n8n-nodes-mochi-zalo-oa).
+
+1. Fork repository.
+2. Tạo nhánh tính năng: `git checkout -b feature/my-feature`
+3. Commit các thay đổi với thông điệp mô tả rõ ràng.
+4. Chạy `npm test` và `npm run lint` trước khi gửi.
+5. Mở pull request vào nhánh `main`.
+
+---
+
+## Giấy phép *(License)*
 
 MIT © [Cong Dinh](mailto:congdinh2021@gmail.com)
 
 ---
 
-## Links
+## Liên kết *(Links)*
 
-- [npm package](https://www.npmjs.com/package/n8n-nodes-mochi-zalo-oa)
-- [GitHub repository](https://github.com/congdinh2008/n8n-nodes-mochi-zalo-oa)
-- [Zalo OA API documentation](https://developers.zalo.me/docs/official-account)
-- [n8n community nodes documentation](https://docs.n8n.io/integrations/community-nodes/)
+- [Gói npm](https://www.npmjs.com/package/n8n-nodes-mochi-zalo-oa)
+- [Kho GitHub](https://github.com/congdinh2008/n8n-nodes-mochi-zalo-oa)
+- [Tài liệu Zalo OA API](https://developers.zalo.me/docs/official-account)
+- [Tài liệu nút cộng đồng n8n](https://docs.n8n.io/integrations/community-nodes/)

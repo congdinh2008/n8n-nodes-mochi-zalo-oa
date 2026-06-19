@@ -1,40 +1,40 @@
-# ZaloOA Node — Article Resource
+# Nút ZaloOA — Tài nguyên Article *(ZaloOA Node — Article Resource)*
 
-The **Article** resource lets you create, update, delete, list, and retrieve articles published on your Zalo Official Account. Articles are long-form content pieces visible in your OA's news feed and shareable via Zalo messages.
-
----
-
-## Prerequisites
-
-- A valid **Zalo OA API** credential with an active access token.
-- Your OA must have article publishing permissions enabled.
+Tài nguyên **Article** cho phép bạn tạo, cập nhật, xóa, liệt kê và truy xuất các bài viết đăng trên Zalo Official Account. Bài viết là nội dung dạng dài xuất hiện trong nguồn tin tức của OA và có thể chia sẻ qua tin nhắn Zalo.
 
 ---
 
-## What Are OA Articles?
+## Yêu cầu trước *(Prerequisites)*
 
-Articles are rich-content posts on your Zalo OA — analogous to blog posts or Facebook Notes. They support HTML-formatted body text, cover images, and author attribution. Once published, articles appear in your OA's news feed and can be linked in messages sent to followers.
+- Thông tin đăng nhập **Zalo OA API** hợp lệ với access token đang hoạt động.
+- OA của bạn phải được bật quyền đăng bài viết.
 
 ---
 
-## Operations
+## Bài viết OA là gì? *(What Are OA Articles?)*
+
+Bài viết là các bài đăng nội dung phong phú trên Zalo OA — tương tự như bài blog hoặc Facebook Notes. Chúng hỗ trợ nội dung thân bài định dạng HTML, hình ảnh bìa và tên tác giả. Sau khi đăng, bài viết xuất hiện trong nguồn tin tức của OA và có thể liên kết trong tin nhắn gửi đến người theo dõi.
+
+---
+
+## Các thao tác *(Operations)*
 
 ### create
 
-Create and publish a new article on your OA.
+Tạo và đăng bài viết mới trên OA của bạn.
 
 **Endpoint:** `POST /article/create`
 
-| Parameter | Type | Required | Description |
-|-----------|------|----------|-------------|
-| Title | string | Yes | Article headline (max 100 characters) |
-| Description | string | No | Short summary shown in previews (max 300 characters) |
-| Cover Image URL | string | Yes | URL of the article cover image |
-| Author | string | No | Author display name |
-| Body | string | Yes | HTML content of the article body |
-| Status | select | Yes | `show` (published) or `hide` (draft) |
+| Tham số | Kiểu | Bắt buộc | Mô tả |
+|---------|------|----------|-------|
+| Title | string | Có | Tiêu đề bài viết (tối đa 100 ký tự) |
+| Description | string | Không | Tóm tắt ngắn hiển thị trong xem trước (tối đa 300 ký tự) |
+| Cover Image URL | string | Có | URL hình ảnh bìa của bài viết |
+| Author | string | Không | Tên tác giả hiển thị |
+| Body | string | Có | Nội dung HTML của thân bài viết |
+| Status | select | Có | `show` (đã đăng) hoặc `hide` (nháp) |
 
-**Output example:**
+**Ví dụ đầu ra:**
 
 ```json
 {
@@ -46,30 +46,30 @@ Create and publish a new article on your OA.
 }
 ```
 
-**Notes:**
-- The `body` field supports a subset of HTML tags: `<p>`, `<b>`, `<i>`, `<ul>`, `<ol>`, `<li>`, `<a>`, `<img>`, `<h1>`–`<h3>`, `<br>`.
-- Cover images must be publicly accessible URLs. Upload with the **Media → uploadImage** operation for best results.
-- Setting `status` to `hide` saves the article as a draft without publishing it to followers.
+**Lưu ý:**
+- Trường `body` hỗ trợ tập con thẻ HTML: `<p>`, `<b>`, `<i>`, `<ul>`, `<ol>`, `<li>`, `<a>`, `<img>`, `<h1>`–`<h3>`, `<br>`.
+- URL hình ảnh bìa phải có thể truy cập công khai. Tải lên bằng thao tác **Media → uploadImage** cho kết quả tốt nhất.
+- Đặt `status` là `hide` lưu bài viết dưới dạng nháp mà không đăng cho người theo dõi.
 
 ---
 
 ### update
 
-Update an existing article's content or status.
+Cập nhật nội dung hoặc trạng thái của bài viết hiện có.
 
 **Endpoint:** `POST /article/update`
 
-| Parameter | Type | Required | Description |
-|-----------|------|----------|-------------|
-| Article ID | string | Yes | The ID of the article to update |
-| Title | string | No | New headline |
-| Description | string | No | New summary |
-| Cover Image URL | string | No | New cover image URL |
-| Author | string | No | New author name |
-| Body | string | No | New HTML body content |
-| Status | select | No | `show` or `hide` |
+| Tham số | Kiểu | Bắt buộc | Mô tả |
+|---------|------|----------|-------|
+| Article ID | string | Có | Mã bài viết cần cập nhật |
+| Title | string | Không | Tiêu đề mới |
+| Description | string | Không | Tóm tắt mới |
+| Cover Image URL | string | Không | URL hình ảnh bìa mới |
+| Author | string | Không | Tên tác giả mới |
+| Body | string | Không | Nội dung HTML mới |
+| Status | select | Không | `show` hoặc `hide` |
 
-**Output example:**
+**Ví dụ đầu ra:**
 
 ```json
 {
@@ -78,23 +78,23 @@ Update an existing article's content or status.
 }
 ```
 
-**Notes:**
-- Only provide fields you want to change. Omitted fields retain their current values.
-- Changing `status` from `hide` to `show` publishes the article immediately.
+**Lưu ý:**
+- Chỉ cung cấp các trường bạn muốn thay đổi. Các trường bị bỏ qua giữ nguyên giá trị hiện tại.
+- Thay đổi `status` từ `hide` sang `show` sẽ đăng bài viết ngay lập tức.
 
 ---
 
 ### remove
 
-Delete a published or draft article permanently.
+Xóa vĩnh viễn bài viết đã đăng hoặc bản nháp.
 
 **Endpoint:** `POST /article/remove`
 
-| Parameter | Type | Required | Description |
-|-----------|------|----------|-------------|
-| Article ID | string | Yes | The ID of the article to delete |
+| Tham số | Kiểu | Bắt buộc | Mô tả |
+|---------|------|----------|-------|
+| Article ID | string | Có | Mã bài viết cần xóa |
 
-**Output example:**
+**Ví dụ đầu ra:**
 
 ```json
 {
@@ -103,23 +103,23 @@ Delete a published or draft article permanently.
 }
 ```
 
-**Warning:** Deletion is permanent and cannot be undone. Any links shared with followers that point to this article will return a 404 page.
+**Cảnh báo:** Xóa là vĩnh viễn và không thể hoàn tác. Mọi liên kết đã chia sẻ với người theo dõi trỏ đến bài viết này sẽ trả về trang 404.
 
 ---
 
 ### getList
 
-Retrieve a paginated list of articles on your OA.
+Truy xuất danh sách bài viết có phân trang trên OA của bạn.
 
 **Endpoint:** `GET /article/getslice` (Zalo API v2.0)
 
-| Parameter | Type | Required | Description |
-|-----------|------|----------|-------------|
-| Offset | number | Yes | Starting index (0-based) |
-| Count | number | Yes | Number of articles to return (max 20 per request) |
-| Status | select | No | `show`, `hide`, or omit to return all |
+| Tham số | Kiểu | Bắt buộc | Mô tả |
+|---------|------|----------|-------|
+| Offset | number | Có | Chỉ số bắt đầu (bắt đầu từ 0) |
+| Count | number | Có | Số bài viết cần trả về (tối đa 20 mỗi yêu cầu) |
+| Status | select | Không | `show`, `hide`, hoặc bỏ trống để trả về tất cả |
 
-**Output example:**
+**Ví dụ đầu ra:**
 
 ```json
 {
@@ -146,15 +146,15 @@ Retrieve a paginated list of articles on your OA.
 
 ### getDetail
 
-Retrieve the full content and metadata of a specific article.
+Truy xuất toàn bộ nội dung và siêu dữ liệu của một bài viết cụ thể.
 
 **Endpoint:** `GET /article/getdetail`
 
-| Parameter | Type | Required | Description |
-|-----------|------|----------|-------------|
-| Article ID | string | Yes | The ID of the article to retrieve |
+| Tham số | Kiểu | Bắt buộc | Mô tả |
+|---------|------|----------|-------|
+| Article ID | string | Có | Mã bài viết cần truy xuất |
 
-**Output example:**
+**Ví dụ đầu ra:**
 
 ```json
 {
@@ -177,7 +177,7 @@ Retrieve the full content and metadata of a specific article.
 
 ---
 
-## Example Workflow — Publish a Weekly Newsletter Article
+## Ví dụ luồng làm việc — Đăng bài viết bản tin hàng tuần *(Example Workflow — Publish a Weekly Newsletter Article)*
 
 ```
 Schedule Trigger (every Monday 8:00 AM)
@@ -189,12 +189,12 @@ Schedule Trigger (every Monday 8:00 AM)
         Author:    Marketing Team
         Status:    show
   → ZaloOA Message sendText (promotion)
-        Text:      New article: {{ $json.title }}. Read it here: {{ $node["ZaloOA"].json.data.url }}
+        Text:      Bài viết mới: {{ $json.title }}. Đọc ngay tại: {{ $node["ZaloOA"].json.data.url }}
 ```
 
 ---
 
-## Example Workflow — Archive Old Articles
+## Ví dụ luồng làm việc — Lưu trữ bài viết cũ *(Example Workflow — Archive Old Articles)*
 
 ```
 Schedule Trigger (1st of each month)
@@ -208,20 +208,20 @@ Schedule Trigger (1st of each month)
 
 ---
 
-## Error Reference
+## Tham chiếu lỗi *(Error Reference)*
 
-| Code | Meaning | Resolution |
-|------|---------|-----------|
-| `-201` | Missing required parameter | Provide title, cover image, body, and status |
-| `-204` | Invalid or expired access token | Refresh the access token |
-| Article not found | Invalid article ID | Verify the article ID from getList |
+| Mã | Ý nghĩa | Cách xử lý |
+|----|---------|-----------|
+| `-201` | Thiếu tham số bắt buộc | Cung cấp title, hình ảnh bìa, body và status |
+| `-204` | Access token không hợp lệ hoặc đã hết hạn | Làm mới access token |
+| Article not found | Mã bài viết không hợp lệ | Xác minh mã bài viết từ getList |
 
 ---
 
-## Notes and Limitations
+## Lưu ý và giới hạn *(Notes and Limitations)*
 
-- The `getList` operation uses Zalo API v2.0 internally — this is handled automatically by the node.
-- Article URLs are permanent Zalo-hosted pages; once an article is deleted, its URL becomes invalid.
-- Rich HTML in the `body` field is rendered in Zalo's article viewer but stripped to plain text in message previews.
-- Images within the article body should use absolute URLs. Relative URLs are not supported.
-- Articles are indexed by Zalo's search if your OA has search visibility enabled.
+- Thao tác `getList` sử dụng Zalo API v2.0 bên trong — điều này được xử lý tự động bởi nút.
+- URL bài viết là các trang được lưu trữ vĩnh viễn trên Zalo; một khi bài viết bị xóa, URL của nó trở nên không hợp lệ.
+- HTML phong phú trong trường `body` được hiển thị trong trình xem bài viết của Zalo nhưng bị chuyển thành văn bản thuần trong bản xem trước tin nhắn.
+- Hình ảnh trong thân bài viết phải dùng URL tuyệt đối. URL tương đối không được hỗ trợ.
+- Bài viết được lập chỉ mục bởi tìm kiếm của Zalo nếu OA của bạn bật khả năng hiển thị tìm kiếm.

@@ -1,30 +1,30 @@
-# ZaloOA Node — Follower Resource
+# Nút ZaloOA — Tài nguyên Follower *(ZaloOA Node — Follower Resource)*
 
-The **Follower** resource provides operations to retrieve information about individual followers, list all followers of your OA, and update follower display data.
-
----
-
-## Prerequisites
-
-- A valid **Zalo OA API** credential with an active access token.
-- The user must be a current follower of your OA for `getInfo` and `update`.
-- `getList` returns only users who follow your OA.
+Tài nguyên **Follower** cung cấp các thao tác để truy xuất thông tin về người theo dõi cá nhân, liệt kê tất cả người theo dõi OA của bạn, và cập nhật dữ liệu hiển thị của người theo dõi.
 
 ---
 
-## Operations
+## Yêu cầu trước *(Prerequisites)*
+
+- Thông tin đăng nhập **Zalo OA API** hợp lệ với access token đang hoạt động.
+- Người dùng phải là người theo dõi hiện tại của OA của bạn đối với `getInfo` và `update`.
+- `getList` chỉ trả về người dùng đang theo dõi OA của bạn.
+
+---
+
+## Các thao tác *(Operations)*
 
 ### getInfo
 
-Retrieve the profile of a specific follower by their Zalo user ID.
+Truy xuất hồ sơ của một người theo dõi cụ thể theo mã người dùng Zalo.
 
 **Endpoint:** `GET /user/detail?data={"user_id":"<id>"}`
 
-| Parameter | Type | Required | Description |
-|-----------|------|----------|-------------|
-| User ID | string | Yes | The follower's Zalo user ID |
+| Tham số | Kiểu | Bắt buộc | Mô tả |
+|---------|------|----------|-------|
+| User ID | string | Có | Mã người dùng Zalo của người theo dõi |
 
-**Output example:**
+**Ví dụ đầu ra:**
 
 ```json
 {
@@ -54,37 +54,37 @@ Retrieve the profile of a specific follower by their Zalo user ID.
 }
 ```
 
-**Field descriptions:**
+**Mô tả các trường:**
 
-| Field | Description |
-|-------|-------------|
-| `display_name` | Name visible in the OA conversation |
-| `birth_date` | Format: YYYYMMDD (0 if not shared) |
-| `gender` | 0 = unknown, 1 = male, 2 = female |
-| `avatar` | Full-size avatar URL |
-| `user_is_follower` | Whether the user currently follows your OA |
-| `follower_from` | Unix timestamp (ms) when the user followed |
-| `tags_and_notes_info` | Tags assigned and notes added via the OA |
-| `shared_info` | Phone and city shared by the user (if permissions granted) |
+| Trường | Mô tả |
+|--------|-------|
+| `display_name` | Tên hiển thị trong hội thoại OA |
+| `birth_date` | Định dạng: YYYYMMDD (0 nếu không chia sẻ) |
+| `gender` | 0 = không xác định, 1 = nam, 2 = nữ |
+| `avatar` | URL ảnh đại diện kích thước đầy đủ |
+| `user_is_follower` | Người dùng có đang theo dõi OA của bạn không |
+| `follower_from` | Unix timestamp (ms) khi người dùng theo dõi |
+| `tags_and_notes_info` | Thẻ nhãn được gán và ghi chú thêm qua OA |
+| `shared_info` | Số điện thoại và thành phố người dùng chia sẻ (nếu được cấp quyền) |
 
-**Notes:**
-- Some fields (phone, birth_date, gender) are only available if the user has explicitly shared them with your OA.
-- Sensitive users (`user_is_sensitive: true`) have restricted profile access.
+**Lưu ý:**
+- Một số trường (phone, birth_date, gender) chỉ có nếu người dùng đã chia sẻ rõ ràng với OA của bạn.
+- Người dùng nhạy cảm (`user_is_sensitive: true`) có quyền truy cập hồ sơ bị hạn chế.
 
 ---
 
 ### getList
 
-Retrieve a paginated list of followers.
+Truy xuất danh sách người theo dõi có phân trang.
 
 **Endpoint:** `GET /user/getlist?data={"offset":0,"count":50}`
 
-| Parameter | Type | Required | Description |
-|-----------|------|----------|-------------|
-| Offset | number | Yes | Starting position (0-based) |
-| Count | number | Yes | Number of followers to return (max 50 per request) |
+| Tham số | Kiểu | Bắt buộc | Mô tả |
+|---------|------|----------|-------|
+| Offset | number | Có | Vị trí bắt đầu (bắt đầu từ 0) |
+| Count | number | Có | Số người theo dõi cần trả về (tối đa 50 mỗi yêu cầu) |
 
-**Output example:**
+**Ví dụ đầu ra:**
 
 ```json
 {
@@ -109,18 +109,18 @@ Retrieve a paginated list of followers.
 }
 ```
 
-**Pagination:**
+**Phân trang *(Pagination):***
 
-To retrieve all followers, iterate with increasing offsets:
+Để truy xuất tất cả người theo dõi, lặp lại với offset tăng dần:
 
 ```
-Offset 0,  Count 50 → users 1–50
-Offset 50, Count 50 → users 51–100
+Offset 0,  Count 50 → người dùng 1–50
+Offset 50, Count 50 → người dùng 51–100
 ...
-Stop when returned count < 50 or offset >= total
+Dừng khi count trả về < 50 hoặc offset >= total
 ```
 
-**n8n pagination example:**
+**Ví dụ phân trang trong n8n:**
 
 ```
 ZaloOA Follower getList (offset: 0, count: 50)
@@ -134,19 +134,19 @@ ZaloOA Follower getList (offset: 0, count: 50)
 
 ### update
 
-Update display name, city, phone number, and/or notes for a follower. This data is stored on the OA side and visible to OA admins — it does not change the user's Zalo profile.
+Cập nhật tên hiển thị, thành phố, số điện thoại và/hoặc ghi chú cho người theo dõi. Dữ liệu này được lưu phía OA và hiển thị cho quản trị viên OA — không thay đổi hồ sơ Zalo của người dùng.
 
 **Endpoint:** `POST /user/update`
 
-| Parameter | Type | Required | Description |
-|-----------|------|----------|-------------|
-| User ID | string | Yes | The follower's Zalo user ID |
-| Display Name | string | No | OA-side display name (max 50 characters) |
-| City | string | No | City name (max 50 characters) |
-| Phone | string | No | Phone number (Vietnamese format, e.g., 0901234567) |
-| Notes | array | No | Array of note strings (max 5 notes, 100 chars each) |
+| Tham số | Kiểu | Bắt buộc | Mô tả |
+|---------|------|----------|-------|
+| User ID | string | Có | Mã người dùng Zalo của người theo dõi |
+| Display Name | string | Không | Tên hiển thị phía OA (tối đa 50 ký tự) |
+| City | string | Không | Tên thành phố (tối đa 50 ký tự) |
+| Phone | string | Không | Số điện thoại (định dạng Việt Nam, ví dụ: 0901234567) |
+| Notes | array | Không | Mảng chuỗi ghi chú (tối đa 5 ghi chú, mỗi ghi chú 100 ký tự) |
 
-**Request body example:**
+**Ví dụ nội dung yêu cầu:**
 
 ```json
 {
@@ -158,7 +158,7 @@ Update display name, city, phone number, and/or notes for a follower. This data 
 }
 ```
 
-**Output example:**
+**Ví dụ đầu ra:**
 
 ```json
 {
@@ -167,14 +167,14 @@ Update display name, city, phone number, and/or notes for a follower. This data 
 }
 ```
 
-**Notes:**
-- The `update` operation only modifies OA-side metadata. It does not change the user's actual Zalo profile.
-- Notes are cumulative — to replace all notes, provide the complete new list.
-- Phone number must follow Vietnamese mobile number format.
+**Lưu ý:**
+- Thao tác `update` chỉ chỉnh sửa siêu dữ liệu phía OA. Không thay đổi hồ sơ Zalo thực sự của người dùng.
+- Ghi chú mang tính cộng dồn — để thay thế tất cả ghi chú, hãy cung cấp danh sách mới hoàn chỉnh.
+- Số điện thoại phải theo định dạng số di động Việt Nam.
 
 ---
 
-## Example Workflow — Sync CRM Data on Follow
+## Ví dụ luồng làm việc — Đồng bộ dữ liệu CRM khi theo dõi *(Example Workflow — Sync CRM Data on Follow)*
 
 ```
 ZaloOAWebhook (event: follow)
@@ -188,24 +188,24 @@ ZaloOAWebhook (event: follow)
   → ZaloOA Message sendText
         Message Type: cs
         User ID:      {{ $json.follower.id }}
-        Text:         Welcome back, {{ $node["HTTP Request"].json.customer.name }}!
+        Text:         Chào mừng trở lại, {{ $node["HTTP Request"].json.customer.name }}!
 ```
 
 ---
 
-## Error Reference
+## Tham chiếu lỗi *(Error Reference)*
 
-| Code | Meaning |
-|------|---------|
-| `-201` | Missing required parameter (User ID) |
-| `-204` | Invalid or expired access token |
-| `-213` | User does not follow this OA |
+| Mã | Ý nghĩa |
+|----|---------|
+| `-201` | Thiếu tham số bắt buộc (User ID) |
+| `-204` | Access token không hợp lệ hoặc đã hết hạn |
+| `-213` | Người dùng không theo dõi OA này |
 
 ---
 
-## Notes and Limitations
+## Lưu ý và giới hạn *(Notes and Limitations)*
 
-- `getList` returns a maximum of 50 followers per call. Use pagination for large OAs.
-- Deleted or banned Zalo accounts will not appear in the follower list.
-- The `gender` and `birth_date` fields require the user to have shared this data with your OA.
-- OA-side updates (from `update`) are visible in the OA admin dashboard but are not surfaced to the user.
+- `getList` trả về tối đa 50 người theo dõi mỗi lần gọi. Dùng phân trang cho các OA lớn.
+- Tài khoản Zalo đã bị xóa hoặc khóa sẽ không xuất hiện trong danh sách người theo dõi.
+- Các trường `gender` và `birth_date` yêu cầu người dùng đã chia sẻ dữ liệu này với OA của bạn.
+- Các cập nhật phía OA (từ `update`) hiển thị trong bảng quản trị OA nhưng không được hiển thị cho người dùng.

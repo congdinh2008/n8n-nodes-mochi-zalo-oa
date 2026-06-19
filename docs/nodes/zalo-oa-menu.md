@@ -1,55 +1,55 @@
-# ZaloOA Node — Menu Resource
+# Nút ZaloOA — Tài nguyên Menu *(ZaloOA Node — Menu Resource)*
 
-The **Menu** resource lets you update your OA's persistent chat menu — the set of quick-action buttons displayed at the bottom of the conversation window in the Zalo app.
-
----
-
-## Prerequisites
-
-- A valid **Zalo OA API** credential with an active access token.
-- Your OA must be verified to use custom menus (unverified OAs may have limited access).
+Tài nguyên **Menu** cho phép bạn cập nhật menu chat cố định của OA — tập hợp các nút hành động nhanh hiển thị ở dưới cùng của cửa sổ hội thoại trong ứng dụng Zalo.
 
 ---
 
-## What Is the OA Chat Menu?
+## Yêu cầu trước *(Prerequisites)*
 
-When a user opens a conversation with your OA in the Zalo app, they see a persistent menu bar at the bottom of the screen. This menu provides up to 5 quick-action items that users can tap — no typing required. It is equivalent to a Facebook Messenger persistent menu.
-
-The menu is OA-wide and applies to all followers uniformly.
+- Thông tin đăng nhập **Zalo OA API** hợp lệ với access token đang hoạt động.
+- OA của bạn phải được xác minh để sử dụng menu tùy chỉnh (OA chưa xác minh có thể bị hạn chế truy cập).
 
 ---
 
-## Operations
+## Menu chat OA là gì? *(What Is the OA Chat Menu?)*
+
+Khi người dùng mở hội thoại với OA của bạn trong ứng dụng Zalo, họ thấy thanh menu cố định ở cuối màn hình. Menu này cung cấp tối đa 5 mục hành động nhanh mà người dùng có thể nhấn — không cần gõ chữ. Tương đương với persistent menu của Facebook Messenger.
+
+Menu áp dụng cho toàn bộ OA và hiển thị đồng nhất với tất cả người theo dõi.
+
+---
+
+## Các thao tác *(Operations)*
 
 ### update
 
-Set or replace the OA's persistent chat menu with up to 5 menu items.
+Đặt hoặc thay thế menu chat cố định của OA với tối đa 5 mục menu.
 
 **Endpoint:** `POST /menu`
 
-| Parameter | Type | Required | Description |
-|-----------|------|----------|-------------|
-| Items | array | Yes | Array of 1–5 menu item objects |
+| Tham số | Kiểu | Bắt buộc | Mô tả |
+|---------|------|----------|-------|
+| Items | array | Có | Mảng gồm 1–5 đối tượng mục menu |
 
-**Menu item fields:**
+**Các trường mục menu:**
 
-| Field | Type | Required | Description |
-|-------|------|----------|-------------|
-| title | string | Yes | Label displayed on the button (max 20 characters) |
-| action.type | string | Yes | One of: `oa.open.url`, `oa.send.message`, `oa.open.phone` |
-| action.url | string | If type = oa.open.url | URL to open in Zalo's in-app browser |
-| action.payload | string | If type = oa.send.message | Text to send as the user's message when tapped |
-| action.phone_code | string | If type = oa.open.phone | Phone number to dial (Vietnamese format) |
+| Trường | Kiểu | Bắt buộc | Mô tả |
+|--------|------|----------|-------|
+| title | string | Có | Nhãn hiển thị trên nút (tối đa 20 ký tự) |
+| action.type | string | Có | Một trong: `oa.open.url`, `oa.send.message`, `oa.open.phone` |
+| action.url | string | Nếu type = oa.open.url | URL mở trong trình duyệt trong ứng dụng Zalo |
+| action.payload | string | Nếu type = oa.send.message | Văn bản gửi thay mặt người dùng khi nhấn |
+| action.phone_code | string | Nếu type = oa.open.phone | Số điện thoại để gọi (định dạng Việt Nam) |
 
-**Action types:**
+**Các loại hành động:**
 
-| Action Type | Behavior | Required Field |
-|-------------|----------|---------------|
-| `oa.open.url` | Opens a URL in Zalo's in-app browser | `url` |
-| `oa.send.message` | Sends a predefined text as the user | `payload` |
-| `oa.open.phone` | Opens the phone dialer with a number | `phone_code` |
+| Loại hành động | Hành vi | Trường bắt buộc |
+|----------------|---------|----------------|
+| `oa.open.url` | Mở URL trong trình duyệt trong ứng dụng Zalo | `url` |
+| `oa.send.message` | Gửi văn bản được định sẵn thay mặt người dùng | `payload` |
+| `oa.open.phone` | Mở bộ quay số với số điện thoại | `phone_code` |
 
-**Request body example:**
+**Ví dụ nội dung yêu cầu:**
 
 ```json
 {
@@ -93,7 +93,7 @@ Set or replace the OA's persistent chat menu with up to 5 menu items.
 }
 ```
 
-**Output example:**
+**Ví dụ đầu ra:**
 
 ```json
 {
@@ -104,11 +104,11 @@ Set or replace the OA's persistent chat menu with up to 5 menu items.
 
 ---
 
-## Example Workflow — Update Menu Seasonally
+## Ví dụ luồng làm việc — Cập nhật menu theo mùa *(Example Workflow — Update Menu Seasonally)*
 
 ```
 Schedule Trigger (1st day of each month)
-  → IF (month in [6, 7, 8])  // Summer
+  → IF (month in [6, 7, 8])  // Mùa hè
         → ZaloOA Menu update
               Items: [
                 { title: "Summer Sale", action: { type: "oa.open.url", url: "https://example.com/summer" } },
@@ -124,25 +124,25 @@ Schedule Trigger (1st day of each month)
 
 ---
 
-## Example Workflow — Listen for Menu Button Clicks
+## Ví dụ luồng làm việc — Lắng nghe nhấn nút menu *(Example Workflow — Listen for Menu Button Clicks)*
 
-When a user taps an `oa.send.message` button, Zalo fires a `user_send_text` event with the payload as the message text. Use the webhook node to handle it:
+Khi người dùng nhấn nút `oa.send.message`, Zalo kích hoạt sự kiện `user_send_text` với payload là nội dung tin nhắn. Dùng nút webhook để xử lý:
 
 ```
 ZaloOAWebhook (event: user_send_text)
   → Switch (on: $json.message.text)
-      "I need help"      → ZaloOA Message sendText (support instructions)
-      "Show me promotions" → ZaloOA Message sendList (promotion list)
-      default            → ZaloOA Message sendText (generic reply)
+      "I need help"      → ZaloOA Message sendText (hướng dẫn hỗ trợ)
+      "Show me promotions" → ZaloOA Message sendList (danh sách khuyến mãi)
+      default            → ZaloOA Message sendText (trả lời chung)
 ```
 
 ---
 
-## Notes and Limitations
+## Lưu ý và giới hạn *(Notes and Limitations)*
 
-- Calling `update` replaces the entire menu. There is no partial update — always provide the full desired menu.
-- Maximum menu items: **5**.
-- Button labels are limited to 20 characters. Longer strings will be truncated or rejected.
-- The menu update takes effect immediately but may take a few seconds to appear for active users due to client caching.
-- There is no separate API endpoint to retrieve the current menu definition. Store your menu configuration in a workflow variable or external data store if you need to track it.
-- Zalo reviews OA menus for policy compliance. Ensure URLs and phone numbers are legitimate.
+- Gọi `update` sẽ thay thế toàn bộ menu. Không có cập nhật một phần — luôn cung cấp toàn bộ menu mong muốn.
+- Số lượng mục menu tối đa: **5**.
+- Nhãn nút giới hạn 20 ký tự. Chuỗi dài hơn sẽ bị cắt bớt hoặc bị từ chối.
+- Cập nhật menu có hiệu lực ngay lập tức nhưng có thể mất vài giây để hiển thị với người dùng đang hoạt động do bộ nhớ đệm phía client.
+- Không có API endpoint riêng biệt để truy xuất cấu hình menu hiện tại. Lưu cấu hình menu của bạn trong biến luồng làm việc hoặc kho dữ liệu bên ngoài nếu cần theo dõi.
+- Zalo xem xét menu OA để tuân thủ chính sách. Đảm bảo URL và số điện thoại là hợp lệ.

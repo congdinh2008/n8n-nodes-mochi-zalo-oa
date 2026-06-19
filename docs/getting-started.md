@@ -1,52 +1,52 @@
-# Getting Started with n8n-nodes-mochi-zalo-oa
+# Bắt đầu với n8n-nodes-mochi-zalo-oa *(Getting Started)*
 
-This guide walks you through everything needed to go from zero to sending your first automated message through your Zalo Official Account.
-
----
-
-## Prerequisites
-
-- A Zalo account with a registered **Official Account (OA)**
-- An n8n instance (v0.187 or later) — self-hosted or n8n Cloud
-- Basic familiarity with n8n workflows
+Hướng dẫn này giúp bạn đi qua toàn bộ các bước cần thiết, từ điểm xuất phát đến việc gửi tin nhắn tự động đầu tiên qua Zalo Official Account của mình.
 
 ---
 
-## Step 1 — Create a Zalo App at developers.zalo.me
+## Yêu cầu trước *(Prerequisites)*
 
-1. Open [https://developers.zalo.me](https://developers.zalo.me) and sign in with your Zalo account.
-2. Click **Create App** (or **Tạo ứng dụng**).
-3. Enter an app name and select **Official Account API** as the app type.
-4. Submit the form. Zalo will provision your app and display the **App ID** and **App Secret** on the app dashboard. Copy both values.
-5. In the app settings, navigate to **Official Account** and link your OA to the app.
-6. Under **Permissions**, enable at minimum:
+- Tài khoản Zalo đã đăng ký **Official Account (OA)**
+- Phiên bản n8n (v0.187 trở lên) — tự lưu trữ hoặc n8n Cloud
+- Hiểu biết cơ bản về luồng làm việc n8n
+
+---
+
+## Bước 1 — Tạo ứng dụng Zalo tại developers.zalo.me *(Step 1 — Create a Zalo App)*
+
+1. Mở [https://developers.zalo.me](https://developers.zalo.me) và đăng nhập bằng tài khoản Zalo của bạn.
+2. Nhấn **Create App** (hoặc **Tạo ứng dụng**).
+3. Nhập tên ứng dụng và chọn **Official Account API** là loại ứng dụng.
+4. Gửi biểu mẫu. Zalo sẽ tạo ứng dụng và hiển thị **App ID** và **App Secret** trên bảng điều khiển. Sao chép cả hai giá trị.
+5. Trong cài đặt ứng dụng, điều hướng đến **Official Account** và liên kết OA của bạn với ứng dụng.
+6. Trong mục **Permissions**, bật tối thiểu:
    - `send_zns_message`
    - `manage_official_account`
    - `manage_oa`
-7. Add your redirect URI (used in the OAuth flow) — for local testing you can use `https://localhost` or a tool like [ngrok](https://ngrok.com).
+7. Thêm redirect URI (dùng trong luồng OAuth) — để kiểm thử cục bộ bạn có thể dùng `https://localhost` hoặc công cụ như [ngrok](https://ngrok.com).
 
 ---
 
-## Step 2 — Obtain an Access Token via OAuth v4 + PKCE
+## Bước 2 — Lấy Access Token qua OAuth v4 + PKCE *(Step 2 — Obtain an Access Token)*
 
-Zalo uses OAuth 2.0 with the PKCE extension. Follow these steps to obtain your initial tokens.
+Zalo sử dụng OAuth 2.0 với phần mở rộng PKCE. Thực hiện các bước sau để lấy token ban đầu.
 
-### 2a — Generate a Code Verifier and Code Challenge
+### 2a — Tạo Code Verifier và Code Challenge
 
 ```bash
-# Generate a random 64-byte code verifier (URL-safe base64)
+# Tạo code verifier ngẫu nhiên 64 ký tự (URL-safe base64)
 CODE_VERIFIER=$(openssl rand -base64 64 | tr -d '=+/' | cut -c1-64)
 
-# Derive the code challenge (SHA-256 hash, URL-safe base64)
+# Tạo code challenge (băm SHA-256, URL-safe base64)
 CODE_CHALLENGE=$(echo -n "$CODE_VERIFIER" | openssl dgst -sha256 -binary | base64 | tr -d '=' | tr '+/' '-_')
 
 echo "Code Verifier: $CODE_VERIFIER"
 echo "Code Challenge: $CODE_CHALLENGE"
 ```
 
-### 2b — Open the Authorization URL
+### 2b — Mở URL ủy quyền *(Open the Authorization URL)*
 
-Open the following URL in your browser (replace placeholders):
+Mở URL sau trong trình duyệt (thay thế các giá trị placeholder):
 
 ```
 https://oauth.zaloapp.com/v4/oa/permission
@@ -56,13 +56,13 @@ https://oauth.zaloapp.com/v4/oa/permission
   &state=random_csrf_token
 ```
 
-Log in and grant the requested permissions. Zalo will redirect to your `redirect_uri` with a `code` parameter, for example:
+Đăng nhập và cấp các quyền được yêu cầu. Zalo sẽ chuyển hướng đến `redirect_uri` của bạn với tham số `code`, ví dụ:
 
 ```
 https://your-redirect-uri/?code=abc123&state=random_csrf_token
 ```
 
-### 2c — Exchange the Code for Tokens
+### 2c — Đổi code lấy token *(Exchange the Code for Tokens)*
 
 ```bash
 curl -X POST https://oauth.zaloapp.com/v4/oa/access_token \
@@ -71,7 +71,7 @@ curl -X POST https://oauth.zaloapp.com/v4/oa/access_token \
   -d "code=abc123&app_id=YOUR_APP_ID&grant_type=authorization_code&code_verifier=YOUR_CODE_VERIFIER"
 ```
 
-A successful response looks like:
+Phản hồi thành công trông như sau:
 
 ```json
 {
@@ -81,76 +81,76 @@ A successful response looks like:
 }
 ```
 
-- **access_token** — valid for 25 hours (90,000 seconds)
-- **refresh_token** — valid for 3 months; keep it secret
+- **access_token** — có hiệu lực trong 25 giờ (90.000 giây)
+- **refresh_token** — có hiệu lực trong 3 tháng; giữ bí mật
 
-> See [credential-setup.md](credential-setup.md) for how to refresh tokens automatically.
-
----
-
-## Step 3 — Set Up the Credential in n8n
-
-1. In n8n, open **Settings → Credentials → New Credential**.
-2. Search for **Zalo OA API** and select it.
-3. Fill in the four fields:
-
-   | Field | Value |
-   |-------|-------|
-   | App ID | Your Zalo app ID |
-   | App Secret | Your Zalo app secret |
-   | Access Token | The token from Step 2c |
-   | Refresh Token | The refresh token from Step 2c |
-
-4. Click **Save**. n8n will call `GET /getoa` to verify the credential. A green checkmark confirms success.
+> Xem [credential-setup.md](credential-setup.md) để biết cách tự động làm mới token.
 
 ---
 
-## Step 4 — Build Your First Workflow: Send a Welcome Message to a New Follower
+## Bước 3 — Thiết lập thông tin đăng nhập trong n8n *(Step 3 — Set Up the Credential in n8n)*
 
-This workflow automatically sends a welcome message every time someone follows your OA.
+1. Trong n8n, mở **Settings → Credentials → New Credential**.
+2. Tìm kiếm **Zalo OA API** và chọn nó.
+3. Điền vào bốn trường:
 
-### Workflow structure
+   | Trường | Giá trị |
+   |--------|---------|
+   | App ID | Mã ứng dụng Zalo của bạn |
+   | App Secret | Khóa bí mật ứng dụng Zalo |
+   | Access Token | Token từ Bước 2c |
+   | Refresh Token | Refresh token từ Bước 2c |
+
+4. Nhấn **Save**. n8n sẽ gọi `GET /getoa` để xác minh thông tin đăng nhập. Dấu kiểm màu xanh xác nhận thành công.
+
+---
+
+## Bước 4 — Xây dựng luồng làm việc đầu tiên: Gửi tin nhắn chào mừng người theo dõi mới *(Step 4 — Build Your First Workflow)*
+
+Luồng làm việc này tự động gửi tin nhắn chào mừng mỗi khi có người theo dõi OA của bạn.
+
+### Cấu trúc luồng làm việc *(Workflow structure)*
 
 ```
 ZaloOAWebhook  →  IF (event = follow)  →  ZaloOA (sendText)
 ```
 
-### Configure the ZaloOAWebhook node
+### Cấu hình nút ZaloOAWebhook *(Configure the ZaloOAWebhook node)*
 
-1. Add a **ZaloOAWebhook** node to a new workflow.
-2. Select your **Zalo OA API** credential.
-3. Set **Event** to `follow`.
-4. Activate the workflow and copy the **Webhook URL** shown in the node.
-5. Register that URL in your Zalo Developer Console under **Official Account → Webhook URL**.
+1. Thêm nút **ZaloOAWebhook** vào luồng làm việc mới.
+2. Chọn thông tin đăng nhập **Zalo OA API** của bạn.
+3. Đặt **Event** là `follow`.
+4. Kích hoạt luồng làm việc và sao chép **Webhook URL** hiển thị trong nút.
+5. Đăng ký URL đó trong Zalo Developer Console tại **Official Account → Webhook URL**.
 
-### Configure the IF node (optional filter)
+### Cấu hình nút IF (bộ lọc tùy chọn) *(Configure the IF node — optional filter)*
 
-The webhook fires only for `follow` events in this example, so the IF node is optional. You can skip it and connect directly to the message node.
+Webhook chỉ kích hoạt cho sự kiện `follow` trong ví dụ này, vì vậy nút IF là tùy chọn. Bạn có thể bỏ qua và kết nối trực tiếp đến nút tin nhắn.
 
-### Configure the ZaloOA node
+### Cấu hình nút ZaloOA *(Configure the ZaloOA node)*
 
-1. Add a **ZaloOA** node after the webhook.
-2. Select your **Zalo OA API** credential.
-3. Set:
+1. Thêm nút **ZaloOA** sau webhook.
+2. Chọn thông tin đăng nhập **Zalo OA API** của bạn.
+3. Đặt:
    - **Resource:** Message
    - **Operation:** sendText
    - **Message Type:** `cs`
    - **User ID:** `{{ $json.follower.id }}`
-   - **Text:** `Welcome! Thank you for following us on Zalo. How can we help you today?`
-4. Connect the ZaloOAWebhook node output to this node.
+   - **Text:** `Chào mừng! Cảm ơn bạn đã theo dõi chúng tôi trên Zalo. Chúng tôi có thể giúp gì cho bạn?`
+4. Kết nối đầu ra nút ZaloOAWebhook đến nút này.
 
-### Activate and test
+### Kích hoạt và kiểm thử *(Activate and test)*
 
-1. Click **Activate** to enable the workflow.
-2. On a second Zalo account (or ask a colleague), follow your OA.
-3. Within seconds, the new follower should receive the welcome message.
+1. Nhấn **Activate** để bật luồng làm việc.
+2. Dùng tài khoản Zalo thứ hai (hoặc nhờ đồng nghiệp), theo dõi OA của bạn.
+3. Trong vài giây, người theo dõi mới sẽ nhận được tin nhắn chào mừng.
 
 ---
 
-## Next Steps
+## Các bước tiếp theo *(Next Steps)*
 
-- [Credential Setup](credential-setup.md) — automate token refresh
-- [Message Types](message-types.md) — choose between cs, transaction, and promotion
-- [Webhook Guide](webhook-guide.md) — handle all 25 event types
-- [Message Node Reference](nodes/zalo-oa-message.md) — full message operations
-- [Follower Node Reference](nodes/zalo-oa-follower.md) — query and update follower profiles
+- [Thiết lập thông tin đăng nhập](credential-setup.md) — tự động làm mới token
+- [Loại tin nhắn](message-types.md) — lựa chọn giữa cs, transaction và promotion
+- [Hướng dẫn Webhook](webhook-guide.md) — xử lý tất cả 25 loại sự kiện
+- [Tham chiếu nút Message](nodes/zalo-oa-message.md) — toàn bộ thao tác tin nhắn
+- [Tham chiếu nút Follower](nodes/zalo-oa-follower.md) — truy vấn và cập nhật hồ sơ người theo dõi

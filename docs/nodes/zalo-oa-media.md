@@ -1,45 +1,45 @@
-# ZaloOA Node — Media Resource
+# Nút ZaloOA — Tài nguyên Media *(ZaloOA Node — Media Resource)*
 
-The **Media** resource provides operations to upload images, files, and animated GIFs to Zalo's content delivery infrastructure. Uploaded assets return a token or attachment ID that can be reused in subsequent message operations.
-
----
-
-## Prerequisites
-
-- A valid **Zalo OA API** credential with an active access token.
-- Binary data must be available in the n8n workflow as a binary property (from an HTTP Request, Read Binary File, or similar node), or the asset must be publicly accessible via URL.
+Tài nguyên **Media** cung cấp các thao tác để tải lên hình ảnh, tệp và GIF động lên hạ tầng phân phối nội dung của Zalo. Các tài sản đã tải lên trả về token hoặc attachment ID có thể tái sử dụng trong các thao tác gửi tin nhắn tiếp theo.
 
 ---
 
-## Why Upload Media First?
+## Yêu cầu trước *(Prerequisites)*
 
-Zalo does not allow arbitrary URLs in message payloads for all asset types. Uploading media in advance:
-
-1. Returns a stable token or attachment ID valid for reuse.
-2. Ensures Zalo's CDN serves the asset — not your origin server.
-3. Avoids repeated bandwidth costs for frequently sent images (e.g., a logo).
+- Thông tin đăng nhập **Zalo OA API** hợp lệ với access token đang hoạt động.
+- Dữ liệu nhị phân phải có sẵn trong luồng làm việc n8n dưới dạng thuộc tính nhị phân (từ nút HTTP Request, Read Binary File hoặc tương tự), hoặc tài sản phải có thể truy cập công khai qua URL.
 
 ---
 
-## Operations
+## Tại sao cần tải lên phương tiện trước? *(Why Upload Media First?)*
+
+Zalo không cho phép URL tùy ý trong payload tin nhắn cho tất cả loại tài sản. Việc tải lên phương tiện trước:
+
+1. Trả về token ổn định hoặc attachment ID có thể tái sử dụng.
+2. Đảm bảo CDN của Zalo phục vụ tài sản — không phải máy chủ gốc của bạn.
+3. Tránh chi phí băng thông lặp lại cho các hình ảnh gửi thường xuyên (ví dụ: logo).
+
+---
+
+## Các thao tác *(Operations)*
 
 ### uploadImage
 
-Upload an image from binary data or a public URL. Returns a token usable in `message.sendImage`.
+Tải lên hình ảnh từ dữ liệu nhị phân hoặc URL công khai. Trả về token có thể dùng trong `message.sendImage`.
 
 **Endpoint:** `POST /upload/image`
 
-| Parameter | Type | Required | Description |
-|-----------|------|----------|-------------|
-| Source | select | Yes | `binary` or `url` |
-| Binary Property | string | If source = binary | Name of the binary property in the n8n item |
-| Image URL | string | If source = url | Publicly accessible image URL |
+| Tham số | Kiểu | Bắt buộc | Mô tả |
+|---------|------|----------|-------|
+| Source | select | Có | `binary` hoặc `url` |
+| Binary Property | string | Nếu source = binary | Tên thuộc tính nhị phân trong mục n8n |
+| Image URL | string | Nếu source = url | URL hình ảnh có thể truy cập công khai |
 
-**Supported formats:** JPEG, PNG, GIF (static), BMP, WEBP
+**Định dạng được hỗ trợ:** JPEG, PNG, GIF (tĩnh), BMP, WEBP
 
-**Maximum file size:** 1 MB
+**Kích thước tệp tối đa:** 1 MB
 
-**Output example:**
+**Ví dụ đầu ra:**
 
 ```json
 {
@@ -51,31 +51,31 @@ Upload an image from binary data or a public URL. Returns a token usable in `mes
 }
 ```
 
-Use `data.attachment_id` as the `Attachment ID` in `message.sendImage`.
+Dùng `data.attachment_id` làm `Attachment ID` trong `message.sendImage`.
 
-**Notes:**
-- The attachment ID does not expire as long as the asset is associated with the OA.
-- Animated GIFs uploaded via `uploadImage` are treated as static images; use `uploadGif` for animation.
+**Lưu ý:**
+- Attachment ID không hết hạn miễn là tài sản được liên kết với OA.
+- GIF động tải lên qua `uploadImage` được xử lý như hình ảnh tĩnh; dùng `uploadGif` để giữ hiệu ứng động.
 
 ---
 
 ### uploadFile
 
-Upload a file document from binary data or a public URL. Returns a token usable in `message.sendFile`.
+Tải lên tài liệu tệp từ dữ liệu nhị phân hoặc URL công khai. Trả về token có thể dùng trong `message.sendFile`.
 
 **Endpoint:** `POST /upload/file`
 
-| Parameter | Type | Required | Description |
-|-----------|------|----------|-------------|
-| Source | select | Yes | `binary` or `url` |
-| Binary Property | string | If source = binary | Name of the binary property in the n8n item |
-| File URL | string | If source = url | Publicly accessible file URL |
+| Tham số | Kiểu | Bắt buộc | Mô tả |
+|---------|------|----------|-------|
+| Source | select | Có | `binary` hoặc `url` |
+| Binary Property | string | Nếu source = binary | Tên thuộc tính nhị phân trong mục n8n |
+| File URL | string | Nếu source = url | URL tệp có thể truy cập công khai |
 
-**Supported formats:** PDF, DOC, DOCX, XLS, XLSX, PPT, PPTX, ZIP, RAR, TXT, and common office formats.
+**Định dạng được hỗ trợ:** PDF, DOC, DOCX, XLS, XLSX, PPT, PPTX, ZIP, RAR, TXT và các định dạng văn phòng thông dụng.
 
-**Maximum file size:** 25 MB
+**Kích thước tệp tối đa:** 25 MB
 
-**Output example:**
+**Ví dụ đầu ra:**
 
 ```json
 {
@@ -87,29 +87,29 @@ Upload a file document from binary data or a public URL. Returns a token usable 
 }
 ```
 
-Use `data.token` as the `File Token` in `message.sendFile`.
+Dùng `data.token` làm `File Token` trong `message.sendFile`.
 
-**Notes:**
-- File tokens have a limited lifetime. Use the token promptly after uploading.
-- If the same file is sent frequently, re-upload periodically to keep the token fresh.
+**Lưu ý:**
+- Token tệp có thời gian hiệu lực giới hạn. Dùng token sớm sau khi tải lên.
+- Nếu cùng một tệp được gửi thường xuyên, hãy tải lên định kỳ để giữ token còn hiệu lực.
 
 ---
 
 ### uploadGif
 
-Upload an animated GIF from binary data or a public URL. Returns an `attachment_id` that renders with animation in Zalo messages.
+Tải lên GIF động từ dữ liệu nhị phân hoặc URL công khai. Trả về `attachment_id` hiển thị có hiệu ứng động trong tin nhắn Zalo.
 
 **Endpoint:** `POST /upload/gif`
 
-| Parameter | Type | Required | Description |
-|-----------|------|----------|-------------|
-| Source | select | Yes | `binary` or `url` |
-| Binary Property | string | If source = binary | Name of the binary property in the n8n item |
-| GIF URL | string | If source = url | Publicly accessible animated GIF URL |
+| Tham số | Kiểu | Bắt buộc | Mô tả |
+|---------|------|----------|-------|
+| Source | select | Có | `binary` hoặc `url` |
+| Binary Property | string | Nếu source = binary | Tên thuộc tính nhị phân trong mục n8n |
+| GIF URL | string | Nếu source = url | URL GIF động có thể truy cập công khai |
 
-**Maximum file size:** 5 MB
+**Kích thước tệp tối đa:** 5 MB
 
-**Output example:**
+**Ví dụ đầu ra:**
 
 ```json
 {
@@ -121,13 +121,13 @@ Upload an animated GIF from binary data or a public URL. Returns an `attachment_
 }
 ```
 
-**Notes:**
-- Animated GIFs must be in standard GIF format (not WEBP or APNG).
-- Large GIFs may take a moment to process. Consider adding a short wait before using the attachment_id in a message.
+**Lưu ý:**
+- GIF động phải ở định dạng GIF chuẩn (không phải WEBP hoặc APNG).
+- GIF lớn có thể mất một chút thời gian xử lý. Cân nhắc thêm khoảng chờ ngắn trước khi dùng attachment_id trong tin nhắn.
 
 ---
 
-## Example Workflow — Upload and Send a Product Image
+## Ví dụ luồng làm việc — Tải lên và gửi hình ảnh sản phẩm *(Example Workflow — Upload and Send a Product Image)*
 
 ```
 HTTP Request (download product image from e-commerce API)
@@ -143,7 +143,7 @@ HTTP Request (download product image from e-commerce API)
 
 ---
 
-## Example Workflow — Send a PDF Invoice
+## Ví dụ luồng làm việc — Gửi hóa đơn PDF *(Example Workflow — Send a PDF Invoice)*
 
 ```
 Generate PDF (e.g., using an HTTP Request to a PDF generation service)
@@ -158,20 +158,20 @@ Generate PDF (e.g., using an HTTP Request to a PDF generation service)
 
 ---
 
-## Error Reference
+## Tham chiếu lỗi *(Error Reference)*
 
-| Code | Meaning | Resolution |
-|------|---------|-----------|
-| `-201` | Missing binary data or URL | Ensure a binary property or URL is provided |
-| `-204` | Invalid or expired access token | Refresh the access token |
-| File too large | Exceeds size limit | Compress or split the file |
+| Mã | Ý nghĩa | Cách xử lý |
+|----|---------|-----------|
+| `-201` | Thiếu dữ liệu nhị phân hoặc URL | Đảm bảo có thuộc tính nhị phân hoặc URL |
+| `-204` | Access token không hợp lệ hoặc đã hết hạn | Làm mới access token |
+| File too large | Vượt quá giới hạn kích thước | Nén hoặc chia nhỏ tệp |
 
 ---
 
-## Notes and Limitations
+## Lưu ý và giới hạn *(Notes and Limitations)*
 
-- All three operations accept either binary data or a public URL — you cannot mix both in a single call.
-- Tokens from `uploadFile` are single-use or short-lived. Do not cache them for more than a few hours.
-- `attachment_id` values from `uploadImage` and `uploadGif` are more durable and can be stored in a database for reuse.
-- Private URLs (behind authentication or firewall) are not supported for URL-based uploads. Use the binary upload path instead.
-- There is no API endpoint to list or delete previously uploaded media assets.
+- Cả ba thao tác đều nhận dữ liệu nhị phân hoặc URL công khai — bạn không thể kết hợp cả hai trong một lần gọi.
+- Token từ `uploadFile` dùng một lần hoặc tồn tại ngắn hạn. Không lưu trữ đệm chúng quá vài giờ.
+- Giá trị `attachment_id` từ `uploadImage` và `uploadGif` bền hơn và có thể lưu trữ trong cơ sở dữ liệu để tái sử dụng.
+- URL riêng tư (đằng sau xác thực hoặc tường lửa) không được hỗ trợ cho tải lên qua URL. Dùng đường dẫn tải lên nhị phân thay thế.
+- Không có API endpoint để liệt kê hoặc xóa các tài sản phương tiện đã tải lên.

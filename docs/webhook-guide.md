@@ -1,112 +1,112 @@
-# Webhook Guide — ZaloOAWebhook Node
+# Hướng dẫn Webhook — Nút ZaloOAWebhook *(Webhook Guide)*
 
-The **ZaloOAWebhook** trigger node listens for real-time events from your Zalo Official Account. This guide covers registration, security verification, event types, and handling retry behavior.
-
----
-
-## How Zalo Webhooks Work
-
-When an event occurs on your OA (a user sends a message, clicks a button, follows/unfollows, etc.), Zalo sends an HTTP POST request to your registered webhook URL. The payload contains event data in JSON format along with a signature header for verification.
+Nút trigger **ZaloOAWebhook** lắng nghe các sự kiện theo thời gian thực từ Zalo Official Account của bạn. Hướng dẫn này trình bày việc đăng ký, xác minh bảo mật, các loại sự kiện, và cách xử lý hành vi thử lại.
 
 ---
 
-## Step 1 — Activate the Webhook Workflow in n8n
+## Webhook Zalo hoạt động như thế nào? *(How Zalo Webhooks Work)*
 
-1. Create a new workflow.
-2. Add a **ZaloOAWebhook** node as the trigger.
-3. Select your **Zalo OA API** credential.
-4. Choose the **Event** types you want to handle (or select `*` for all events).
-5. Click **Activate Workflow** (the toggle in the top-right corner).
+Khi một sự kiện xảy ra trên OA của bạn (người dùng gửi tin nhắn, nhấn nút, theo dõi/bỏ theo dõi, v.v.), Zalo gửi một yêu cầu HTTP POST đến URL webhook đã đăng ký. Payload chứa dữ liệu sự kiện ở định dạng JSON cùng với tiêu đề chữ ký để xác minh.
 
-Once activated, n8n displays the **Webhook URL** in the node. It follows this format:
+---
+
+## Bước 1 — Kích hoạt luồng làm việc Webhook trong n8n *(Step 1 — Activate the Webhook Workflow in n8n)*
+
+1. Tạo luồng làm việc mới.
+2. Thêm nút **ZaloOAWebhook** làm trigger.
+3. Chọn thông tin đăng nhập **Zalo OA API** của bạn.
+4. Chọn các loại **Event** bạn muốn xử lý (hoặc chọn `*` cho tất cả sự kiện).
+5. Nhấn **Activate Workflow** (nút bật/tắt ở góc trên bên phải).
+
+Sau khi kích hoạt, n8n hiển thị **Webhook URL** trong nút. URL theo định dạng:
 
 ```
 https://<your-n8n-host>/webhook/<unique-path>
 ```
 
-For example:
+Ví dụ:
 
 ```
 https://n8n.example.com/webhook/zalo-oa-events
 ```
 
-> If n8n is behind a firewall or NAT, make sure the webhook URL is publicly accessible from the internet. Zalo's servers must be able to reach it.
+> Nếu n8n ở sau tường lửa hoặc NAT, hãy đảm bảo webhook URL có thể truy cập công khai từ internet. Máy chủ của Zalo phải tiếp cận được URL đó.
 
 ---
 
-## Step 2 — Register the Webhook URL in Zalo Developer Console
+## Bước 2 — Đăng ký Webhook URL trong Zalo Developer Console *(Step 2 — Register the Webhook URL)*
 
-1. Go to [https://developers.zalo.me](https://developers.zalo.me) and open your app.
-2. Navigate to **Official Account → Webhook**.
-3. Enter your n8n webhook URL in the **Callback URL** field.
-4. Click **Verify** — Zalo sends a GET request with a `hub.challenge` parameter. The node automatically responds with the challenge value to confirm ownership.
-5. Once verified, select the event types you want to receive and click **Save**.
+1. Truy cập [https://developers.zalo.me](https://developers.zalo.me) và mở ứng dụng của bạn.
+2. Điều hướng đến **Official Account → Webhook**.
+3. Nhập webhook URL n8n của bạn vào trường **Callback URL**.
+4. Nhấn **Verify** — Zalo gửi yêu cầu GET với tham số `hub.challenge`. Nút tự động phản hồi với giá trị challenge để xác nhận quyền sở hữu.
+5. Sau khi xác minh, chọn các loại sự kiện bạn muốn nhận và nhấn **Save**.
 
-> You only need to register one URL. Event filtering is then handled in n8n using the **Event** field or an **IF** node downstream.
+> Bạn chỉ cần đăng ký một URL. Việc lọc sự kiện sau đó được xử lý trong n8n thông qua trường **Event** hoặc nút **IF** ở hạ nguồn.
 
 ---
 
-## Step 3 — Zalo Verification Handshake
+## Bước 3 — Bắt tay xác minh Zalo *(Step 3 — Zalo Verification Handshake)*
 
-When you first register the webhook URL, Zalo performs a GET handshake to verify you own the endpoint:
+Khi bạn đăng ký webhook URL lần đầu, Zalo thực hiện bắt tay GET để xác minh bạn sở hữu điểm cuối:
 
 ```
 GET <your-webhook-url>?hub.mode=subscribe&hub.challenge=<random_string>&hub.verify_token=<token>
 ```
 
-The **ZaloOAWebhook** node automatically responds with the raw `hub.challenge` value and HTTP 200. No configuration is needed on your end.
+Nút **ZaloOAWebhook** tự động phản hồi với giá trị `hub.challenge` thô và HTTP 200. Không cần cấu hình gì thêm.
 
 ---
 
-## Step 4 — MAC Signature Verification
+## Bước 4 — Xác minh chữ ký MAC *(Step 4 — MAC Signature Verification)*
 
-Every event POST from Zalo includes the header:
+Mỗi sự kiện POST từ Zalo đều có tiêu đề:
 
 ```
 X-ZEvent-Signature: <hex_signature>
 ```
 
-The signature is computed as:
+Chữ ký được tính như sau:
 
 ```
 HMAC-SHA256(appId + rawBody + timestamp + appSecret)
 ```
 
-The **ZaloOAWebhook** node verifies this signature automatically using the **App ID** and **App Secret** stored in your credential. Requests that fail verification are rejected with HTTP 401.
+Nút **ZaloOAWebhook** xác minh chữ ký này tự động bằng **App ID** và **App Secret** lưu trong thông tin đăng nhập. Các yêu cầu không qua xác minh bị từ chối với HTTP 401.
 
-> Ensure your **App Secret** in the n8n credential exactly matches the one in the Zalo Developer Console.
-
----
-
-## Event Types Reference
-
-| Event | Description |
-|-------|-------------|
-| `follow` | A user follows your OA |
-| `unfollow` | A user unfollows your OA |
-| `user_send_text` | User sends a text message |
-| `user_send_image` | User sends an image |
-| `user_send_file` | User sends a file attachment |
-| `user_send_audio` | User sends a voice note |
-| `user_send_video` | User sends a video |
-| `user_send_sticker` | User sends a sticker |
-| `user_send_gif` | User sends an animated GIF |
-| `user_send_link` | User sends a link |
-| `user_send_location` | User shares their location |
-| `user_send_business_card` | User shares a business card |
-| `user_click_button` | User clicks a message button |
-| `user_click_link` | User clicks a link in a message |
-| `add_user_to_tag` | A user is added to a tag |
-| `user_call_oa` | User makes a voice or video call to the OA |
-| `*` | All events (catch-all) |
-
-> Note: Group-related events (e.g., `group_created`, `group_joined`) are available depending on your OA type and Zalo permissions.
+> Đảm bảo **App Secret** trong thông tin đăng nhập n8n khớp chính xác với giá trị trong Zalo Developer Console.
 
 ---
 
-## Event Payload Structure
+## Tham chiếu các loại sự kiện *(Event Types Reference)*
 
-A typical event payload looks like this:
+| Sự kiện | Mô tả |
+|---------|-------|
+| `follow` | Người dùng theo dõi OA của bạn |
+| `unfollow` | Người dùng bỏ theo dõi OA của bạn |
+| `user_send_text` | Người dùng gửi tin nhắn văn bản |
+| `user_send_image` | Người dùng gửi hình ảnh |
+| `user_send_file` | Người dùng gửi tệp đính kèm |
+| `user_send_audio` | Người dùng gửi ghi âm giọng nói |
+| `user_send_video` | Người dùng gửi video |
+| `user_send_sticker` | Người dùng gửi nhãn dán |
+| `user_send_gif` | Người dùng gửi GIF động |
+| `user_send_link` | Người dùng gửi đường dẫn |
+| `user_send_location` | Người dùng chia sẻ vị trí |
+| `user_send_business_card` | Người dùng chia sẻ danh thiếp |
+| `user_click_button` | Người dùng nhấn nút trong tin nhắn |
+| `user_click_link` | Người dùng nhấn đường dẫn trong tin nhắn |
+| `add_user_to_tag` | Người dùng được thêm vào thẻ nhãn |
+| `user_call_oa` | Người dùng gọi thoại hoặc video đến OA |
+| `*` | Tất cả sự kiện (bắt tất cả) |
+
+> Lưu ý: Các sự kiện liên quan đến nhóm (ví dụ: `group_created`, `group_joined`) có thể có tùy thuộc vào loại OA và quyền Zalo của bạn.
+
+---
+
+## Cấu trúc payload sự kiện *(Event Payload Structure)*
+
+Payload sự kiện điển hình trông như sau:
 
 ```json
 {
@@ -126,7 +126,7 @@ A typical event payload looks like this:
 }
 ```
 
-For message events, the payload includes a `message` object:
+Đối với các sự kiện tin nhắn, payload có thêm đối tượng `message`:
 
 ```json
 {
@@ -143,50 +143,50 @@ For message events, the payload includes a `message` object:
 
 ---
 
-## Example Workflow — Auto-Reply to Text Messages
+## Ví dụ luồng làm việc — Tự động trả lời tin nhắn văn bản *(Example Workflow — Auto-Reply to Text Messages)*
 
 ```
 ZaloOAWebhook (event: user_send_text)
   → ZaloOA (Message → sendText)
       User ID:  {{ $json.sender.id }}
       Message Type: cs
-      Text: Thanks for your message! We'll get back to you shortly.
+      Text: Cảm ơn tin nhắn của bạn! Chúng tôi sẽ phản hồi sớm nhất có thể.
 ```
 
 ---
 
-## Example Workflow — Route by Event Type
+## Ví dụ luồng làm việc — Phân loại theo loại sự kiện *(Example Workflow — Route by Event Type)*
 
 ```
 ZaloOAWebhook (event: *)
   → Switch (on: $json.event_name)
-      "follow"          → ZaloOA sendText (welcome message)
-      "user_send_text"  → ZaloOA sendText (auto-reply)
+      "follow"          → ZaloOA sendText (tin nhắn chào mừng)
+      "user_send_text"  → ZaloOA sendText (tự động trả lời)
       "user_click_button" → HTTP Request (internal API)
       default           → No Operation
 ```
 
 ---
 
-## Retry Behavior
+## Hành vi thử lại *(Retry Behavior)*
 
-Zalo retries failed webhook deliveries with exponential back-off if your endpoint does not respond with HTTP 200 within the timeout window (approximately 5 seconds).
+Zalo thử lại các lần gửi webhook thất bại với thời gian chờ tăng dần theo cấp số nhân nếu điểm cuối của bạn không phản hồi HTTP 200 trong thời gian chờ (khoảng 5 giây).
 
-**Best practices to avoid missed events:**
+**Thực hành tốt nhất để tránh mất sự kiện:**
 
-- Respond to Zalo's POST immediately with HTTP 200, then process the event asynchronously (n8n handles this automatically).
-- Keep your n8n instance healthy and the workflow activated.
-- Monitor for `X-ZEvent-Signature` failures in your n8n execution logs — they indicate a credential mismatch.
-- Do not perform long-running operations (database writes, third-party API calls) synchronously before returning the 200 response. Use n8n's built-in async execution instead.
+- Phản hồi POST của Zalo ngay lập tức với HTTP 200, sau đó xử lý sự kiện bất đồng bộ (n8n xử lý điều này tự động).
+- Duy trì phiên bản n8n hoạt động ổn định và luồng làm việc được kích hoạt.
+- Theo dõi lỗi xác minh `X-ZEvent-Signature` trong nhật ký thực thi n8n — chúng chỉ ra sự không khớp thông tin đăng nhập.
+- Không thực hiện các thao tác chạy lâu (ghi cơ sở dữ liệu, gọi API bên thứ ba) đồng bộ trước khi trả về phản hồi 200. Hãy dùng chế độ thực thi bất đồng bộ tích hợp của n8n.
 
 ---
 
-## Troubleshooting
+## Xử lý sự cố *(Troubleshooting)*
 
-| Problem | Likely Cause | Fix |
-|---------|-------------|-----|
-| Verification handshake fails | n8n not publicly accessible | Expose n8n via ngrok, reverse proxy, or cloud deployment |
-| Events not received | Workflow not activated | Click **Activate** in the workflow editor |
-| Signature verification fails | App Secret mismatch | Check App Secret in both Zalo console and n8n credential |
-| Duplicate events | Retry from Zalo | Add deduplication logic using `message.mid` |
-| GET handshake succeeds but POST fails | Port or firewall issue | Allow inbound POST on the webhook port |
+| Vấn đề | Nguyên nhân có thể | Cách khắc phục |
+|--------|-------------------|----------------|
+| Bắt tay xác minh thất bại | n8n không thể truy cập công khai | Mở n8n qua ngrok, reverse proxy hoặc triển khai đám mây |
+| Không nhận được sự kiện | Luồng làm việc chưa được kích hoạt | Nhấn **Activate** trong trình soạn thảo luồng làm việc |
+| Xác minh chữ ký thất bại | App Secret không khớp | Kiểm tra App Secret trong cả Zalo console và thông tin đăng nhập n8n |
+| Sự kiện trùng lặp | Zalo đang thử lại | Thêm logic loại trùng dùng `message.mid` |
+| Bắt tay GET thành công nhưng POST thất bại | Vấn đề cổng hoặc tường lửa | Cho phép POST đầu vào trên cổng webhook |

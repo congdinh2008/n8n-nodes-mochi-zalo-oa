@@ -1,28 +1,28 @@
-# ZaloOA Node — Tag Resource
+# Nút ZaloOA — Tài nguyên Tag *(ZaloOA Node — Tag Resource)*
 
-The **Tag** resource lets you manage follower tags on your Zalo OA. Tags are labels you assign to followers for segmentation, targeting, and organization — similar to contact labels in a CRM.
-
----
-
-## Prerequisites
-
-- A valid **Zalo OA API** credential with an active access token.
-- Tags must already exist on your OA before you can assign them (Zalo does not auto-create tags on assign).
-- The user must be a follower of your OA.
+Tài nguyên **Tag** cho phép bạn quản lý thẻ nhãn người theo dõi trên Zalo OA. Thẻ nhãn là nhãn bạn gán cho người theo dõi để phân khúc, nhắm mục tiêu và tổ chức — tương tự như nhãn liên hệ trong CRM.
 
 ---
 
-## Operations
+## Yêu cầu trước *(Prerequisites)*
+
+- Thông tin đăng nhập **Zalo OA API** hợp lệ với access token đang hoạt động.
+- Thẻ nhãn phải đã tồn tại trên OA của bạn trước khi có thể gán chúng (Zalo không tự tạo thẻ nhãn khi gán).
+- Người dùng phải là người theo dõi OA của bạn.
+
+---
+
+## Các thao tác *(Operations)*
 
 ### getList
 
-Retrieve all tags defined on your OA.
+Truy xuất tất cả thẻ nhãn được định nghĩa trên OA của bạn.
 
 **Endpoint:** `GET /tag/gettagsofoa`
 
-No parameters required.
+Không cần tham số.
 
-**Output example:**
+**Ví dụ đầu ra:**
 
 ```json
 {
@@ -45,25 +45,25 @@ No parameters required.
 }
 ```
 
-**Notes:**
-- Returns all tags, regardless of how many followers each tag has.
-- `total_follower` reflects the current count at the time of the call.
+**Lưu ý:**
+- Trả về tất cả thẻ nhãn, bất kể mỗi thẻ có bao nhiêu người theo dõi.
+- `total_follower` phản ánh số lượng hiện tại tại thời điểm gọi.
 
 ---
 
 ### assign
 
-Assign a tag to a follower by tag name or tag ID.
+Gán thẻ nhãn cho người theo dõi theo tên thẻ hoặc mã thẻ.
 
 **Endpoint:** `POST /tag/taguser`
 
-| Parameter | Type | Required | Description |
-|-----------|------|----------|-------------|
-| User ID | string | Yes | The follower's Zalo user ID |
-| Tag Name | string | One of tag_name or tag_id | Human-readable tag name |
-| Tag ID | string | One of tag_name or tag_id | Numeric tag ID |
+| Tham số | Kiểu | Bắt buộc | Mô tả |
+|---------|------|----------|-------|
+| User ID | string | Có | Mã người dùng Zalo của người theo dõi |
+| Tag Name | string | Một trong tag_name hoặc tag_id | Tên thẻ nhãn dễ đọc |
+| Tag ID | string | Một trong tag_name hoặc tag_id | Mã thẻ nhãn dạng số |
 
-**Output example:**
+**Ví dụ đầu ra:**
 
 ```json
 {
@@ -72,24 +72,24 @@ Assign a tag to a follower by tag name or tag ID.
 }
 ```
 
-**Notes:**
-- A follower can hold multiple tags simultaneously.
-- If a tag does not exist on the OA, the API returns an error. Create the tag in the Zalo OA admin console first.
-- Assigning a tag the user already has is idempotent (no error returned).
+**Lưu ý:**
+- Một người theo dõi có thể có nhiều thẻ nhãn cùng lúc.
+- Nếu thẻ nhãn không tồn tại trên OA, API trả về lỗi. Tạo thẻ nhãn trong bảng quản trị Zalo OA trước.
+- Gán thẻ nhãn mà người dùng đã có là idempotent (không trả về lỗi).
 
 ---
 
 ### remove
 
-Delete a tag from your OA entirely. This removes the tag from all followers who had it.
+Xóa hoàn toàn thẻ nhãn khỏi OA của bạn. Điều này xóa thẻ nhãn khỏi tất cả người theo dõi đang có nó.
 
 **Endpoint:** `POST /tag/rmtag`
 
-| Parameter | Type | Required | Description |
-|-----------|------|----------|-------------|
-| Tag Name | string | Yes | The exact tag name to delete |
+| Tham số | Kiểu | Bắt buộc | Mô tả |
+|---------|------|----------|-------|
+| Tag Name | string | Có | Tên thẻ nhãn chính xác cần xóa |
 
-**Output example:**
+**Ví dụ đầu ra:**
 
 ```json
 {
@@ -98,22 +98,22 @@ Delete a tag from your OA entirely. This removes the tag from all followers who 
 }
 ```
 
-**Warning:** This operation is irreversible. Deleting a tag removes it from every follower who held it and cannot be undone via the API.
+**Cảnh báo:** Thao tác này không thể hoàn tác. Xóa thẻ nhãn sẽ xóa nó khỏi mọi người theo dõi đang có thẻ đó và không thể khôi phục qua API.
 
 ---
 
 ### removeFollower
 
-Remove a specific follower from a tag, without deleting the tag itself.
+Xóa một người theo dõi cụ thể khỏi thẻ nhãn, mà không xóa bản thân thẻ nhãn.
 
 **Endpoint:** `POST /tag/rmfollowerfromtag`
 
-| Parameter | Type | Required | Description |
-|-----------|------|----------|-------------|
-| User ID | string | Yes | The follower's Zalo user ID |
-| Tag Name | string | Yes | The tag to remove from this follower |
+| Tham số | Kiểu | Bắt buộc | Mô tả |
+|---------|------|----------|-------|
+| User ID | string | Có | Mã người dùng Zalo của người theo dõi |
+| Tag Name | string | Có | Thẻ nhãn cần xóa khỏi người theo dõi này |
 
-**Output example:**
+**Ví dụ đầu ra:**
 
 ```json
 {
@@ -122,13 +122,13 @@ Remove a specific follower from a tag, without deleting the tag itself.
 }
 ```
 
-**Notes:**
-- Use this when a user no longer qualifies for a segment but the tag itself should be preserved.
-- Removing a user from a tag they do not have returns a success response (no error).
+**Lưu ý:**
+- Dùng khi người dùng không còn đủ điều kiện cho một phân khúc nhưng bản thân thẻ nhãn cần được giữ lại.
+- Xóa người dùng khỏi thẻ nhãn họ không có vẫn trả về phản hồi thành công (không lỗi).
 
 ---
 
-## Example Workflow — Auto-Tag Followers by Location
+## Ví dụ luồng làm việc — Tự động gắn thẻ người theo dõi theo địa điểm *(Example Workflow — Auto-Tag Followers by Location)*
 
 ```
 ZaloOAWebhook (event: follow)
@@ -142,7 +142,7 @@ ZaloOAWebhook (event: follow)
 
 ---
 
-## Example Workflow — Remove Inactive Followers from Newsletter Tag
+## Ví dụ luồng làm việc — Xóa người theo dõi không hoạt động khỏi thẻ nhãn Newsletter *(Example Workflow — Remove Inactive Followers from Newsletter Tag)*
 
 ```
 Schedule Trigger (weekly)
@@ -157,20 +157,20 @@ Schedule Trigger (weekly)
 
 ---
 
-## Error Reference
+## Tham chiếu lỗi *(Error Reference)*
 
-| Code | Meaning | Resolution |
-|------|---------|-----------|
-| `-201` | Missing required parameter | Provide both User ID and tag name/ID |
-| `-204` | Invalid or expired access token | Refresh the access token |
-| `-213` | User does not follow this OA | Verify the user is a current follower |
-| Tag not found | Tag name does not exist | Create the tag in the Zalo OA admin console |
+| Mã | Ý nghĩa | Cách xử lý |
+|----|---------|-----------|
+| `-201` | Thiếu tham số bắt buộc | Cung cấp cả User ID và tên/mã thẻ nhãn |
+| `-204` | Access token không hợp lệ hoặc đã hết hạn | Làm mới access token |
+| `-213` | Người dùng không theo dõi OA này | Xác minh người dùng là người theo dõi hiện tại |
+| Tag not found | Tên thẻ nhãn không tồn tại | Tạo thẻ nhãn trong bảng quản trị Zalo OA |
 
 ---
 
-## Notes and Limitations
+## Lưu ý và giới hạn *(Notes and Limitations)*
 
-- Tags must be created through the Zalo OA admin portal ([oa.zalo.me](https://oa.zalo.me)) or the OA management API — the `assign` operation does not create new tags.
-- Maximum number of tags per OA: varies by OA type; check the Zalo documentation for your account tier.
-- Maximum tags per follower: varies; consult Zalo's limits documentation.
-- The `getList` operation does not return follower IDs for a specific tag. Use the `user/getlist` endpoint filtered by tag in the Zalo OA admin console for tag-based follower lists.
+- Thẻ nhãn phải được tạo thông qua cổng quản trị Zalo OA ([oa.zalo.me](https://oa.zalo.me)) hoặc API quản lý OA — thao tác `assign` không tạo thẻ nhãn mới.
+- Số lượng thẻ nhãn tối đa cho mỗi OA: tùy thuộc loại OA; kiểm tra tài liệu Zalo cho cấp tài khoản của bạn.
+- Số lượng thẻ nhãn tối đa cho mỗi người theo dõi: tùy thuộc; tham khảo tài liệu giới hạn của Zalo.
+- Thao tác `getList` không trả về mã người dùng cho một thẻ nhãn cụ thể. Dùng endpoint `user/getlist` được lọc theo thẻ nhãn trong bảng quản trị Zalo OA để lấy danh sách người theo dõi theo thẻ nhãn.
