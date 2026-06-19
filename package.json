@@ -1,0 +1,73 @@
+{
+    "name": "mochi-zalo-oa-n8n-nodes",
+    "version": "1.0.0",
+    "description": "n8n community nodes for Zalo Official Account API v3.0 — send messages, manage followers, tags, articles, store and listen to OA events.",
+    "keywords": [
+        "n8n-community-node-package",
+        "n8n-nodes",
+        "zalo",
+        "zalo-oa",
+        "zalo-official-account",
+        "zalo-automation",
+        "zalo-n8n",
+        "zalo-workflow",
+        "zalo-chatbot",
+        "vietnam",
+        "automation"
+    ],
+    "license": "MIT",
+    "author": {
+        "name": "Cong Dinh",
+        "email": "congdinh2021@gmail.com",
+        "url": "https://github.com/congdinh2008"
+    },
+    "homepage": "https://github.com/congdinh2008/mochi-zalo-oa-n8n-nodes",
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/congdinh2008/mochi-zalo-oa-n8n-nodes.git"
+    },
+    "engines": {
+        "node": ">=22.0.0"
+    },
+    "main": "index.js",
+    "scripts": {
+        "build": "tsc && npm run build:icons",
+        "build:icons": "cp src/nodes/shared/zalooa.svg dist/nodes/shared/zalooa.svg 2>/dev/null || true",
+        "typecheck": "tsc --noEmit",
+        "dev": "tsc --watch",
+        "test": "bun test",
+        "lint": "eslint src/",
+        "lint:fix": "eslint src/ --fix",
+        "format": "prettier src/ --write"
+    },
+    "files": [
+        "dist",
+        "README.md",
+        "CHANGELOG.md"
+    ],
+    "n8n": {
+        "n8nNodesApiVersion": 1,
+        "credentials": [
+            "dist/credentials/ZaloOAApi.credentials.js"
+        ],
+        "nodes": [
+            "dist/nodes/ZaloOA/ZaloOA.node.js",
+            "dist/nodes/ZaloOAWebhook/ZaloOAWebhook.node.js"
+        ]
+    },
+    "peerDependencies": {
+        "n8n-core": ">=1.0.0",
+        "n8n-workflow": ">=1.0.0"
+    },
+    "devDependencies": {
+        "@types/bun": "^1.1.14",
+        "@types/node": "^20.14.10",
+        "@typescript-eslint/eslint-plugin": "^7.15.0",
+        "@typescript-eslint/parser": "^7.15.0",
+        "eslint": "^8.56.0",
+        "eslint-plugin-n8n-nodes-base": "^1.16.1",
+        "n8n-workflow": "^1.0.0",
+        "prettier": "^3.3.2",
+        "typescript": "^5.5.3"
+    }
+}

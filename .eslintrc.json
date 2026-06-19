@@ -1,0 +1,25 @@
+{
+    "root": true,
+    "env": { "node": true, "es2022": true },
+    "parser": "@typescript-eslint/parser",
+    "parserOptions": { "project": ["./tsconfig.json"] },
+    "plugins": ["@typescript-eslint", "n8n-nodes-base"],
+    "extends": [
+        "plugin:@typescript-eslint/recommended"
+    ],
+    "ignorePatterns": ["dist/", "node_modules/", "test/"],
+    "overrides": [
+        {
+            "files": ["src/credentials/**/*.ts"],
+            "rules": { "n8n-nodes-base/cred-class-field-documentation-url-missing": "warn" }
+        },
+        {
+            "files": ["src/nodes/**/*.ts"],
+            "rules": { "n8n-nodes-base/node-class-description-icon-not-svg": "warn" }
+        }
+    ],
+    "rules": {
+        "@typescript-eslint/no-explicit-any": "warn",
+        "@typescript-eslint/no-unused-vars": ["error", { "argsIgnorePattern": "^_" }]
+    }
+}
